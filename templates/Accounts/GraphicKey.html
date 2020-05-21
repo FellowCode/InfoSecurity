@@ -1,0 +1,104 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Графический ключ | ПГУ им. "Шолом-Алейхема"{% endblock %}
+
+{% block content %}
+    <div class="ui container">
+        <div class="child-center">
+            <div class="graphic-key cblock">
+                <div class="content">
+                    <div class="child-center">
+                        <div class="form-container">
+                            <h2 class="ui center aligned header">Графический ключ</h2>
+                            <form method="post">
+                                {% csrf_token %}
+                                <input type="hidden" name="gr_key">
+                            </form>
+
+                            <div class="points">
+                                <div id="loader" class="ui inverted dimmer">
+                                    <div class="ui text loader">Подождите...</div>
+                                </div>
+                                <div class="line" data-value="0">
+                                    <div class="child-center">
+                                        <div class="point" data-value="1"></div>
+                                        <div class="point" data-value="2"></div>
+                                        <div class="point" data-value="3"></div>
+                                    </div>
+                                </div>
+                                <div class="line" data-value="1">
+                                    <div class="child-center">
+                                        <div class="point" data-value="4"></div>
+                                        <div class="point" data-value="5"></div>
+                                        <div class="point" data-value="6"></div>
+                                    </div>
+                                </div>
+                                <div class="line" data-value="2">
+                                    <div class="child-center">
+                                        <div class="point" data-value="7"></div>
+                                        <div class="point" data-value="8"></div>
+                                        <div class="point" data-value="9"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+{% block script %}
+    <script type="text/javascript" src="{% static 'js/jquery.line.js' %}"></script>
+    <script type="text/javascript">
+        $(document).ready(function () {
+            var graphic_key = ''
+            var $gr_key = $('input[name=gr_key]')
+
+            var mousedown = false;
+
+            var $points = $('.points')
+
+            var last_pos = false
+
+            $points.mousedown(function () {
+                mousedown = true
+            }).mouseup(sendGrKey).mouseleave(sendGrKey)
+
+            function sendGrKey() {
+                $('#loader').addClass('active')
+                if (graphic_key.length > 3) {
+                    $gr_key.val(graphic_key)
+                    $('form').submit()
+                } else {
+                    window.location.reload()
+                }
+            }
+
+            function mOverPoint($this) {
+                if (mousedown && !graphic_key.includes($this.attr('data-value'))) {
+                    var cur_pos = $this.position()
+                    var row_num = parseInt($this.closest('.line').attr('data-value'))
+                    cur_pos.top = cur_pos.top + 47 + 94 * row_num
+                    cur_pos.left = cur_pos.left + 47
+                    if (last_pos) {
+                        $points.line(last_pos.left, last_pos.top, cur_pos.left, cur_pos.top,
+                            {zindex: 1, color: '#007b6e', stroke: '5', style: 'solid', class: 'line'})
+                    }
+                    last_pos = cur_pos
+                    $this.addClass('active')
+                    graphic_key += $this.attr('data-value')
+                    console.log(graphic_key)
+                }
+            }
+
+            $('.point').mousedown(function () {
+                mousedown = true
+                mOverPoint($(this))
+            }).mouseup(sendGrKey).mouseover(function () {
+                mOverPoint($(this))
+            })
+        })
+    </script>
+{% endblock %}

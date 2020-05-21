@@ -1,0 +1,52 @@
+{% extends 'base.html' %}
+{% load modified %}
+
+{% block title %}Онлайн распределение рабочей нагрузки | ПГУ им. "Шолом-Алейхема"{% endblock %}
+
+{% block content %}
+    <div class="ui container">
+        <div class="child-center">
+            <div class="index cblock">
+                <div class="content">
+                    <h1 class="header center aligned ui">Отдел информационной безопасности</h1>
+                    <h2 class="header center aligned ui">Приамурский государственный университет им. Шолом-Алейхема</h2>
+                    {% if not user.is_authenticated %}
+                    <div class="sixteen wide">
+                        <div class="child-center">
+                            <a href="{% url 'accounts:login' %}" class="search-papers massive ui primary button">
+
+                                Вход
+                                <i class="sign in alternate right icon"></i>
+                            </a>
+                        </div>
+                    </div>
+                    <div class="sixteen wide">
+                        <div class="child-center">
+                            <a href="{% url 'accounts:registration' %}" class="massive ui primary button">
+
+                                Регистрация
+                                <i class="user plus right icon"></i>
+                            </a>
+                        </div>
+                    </div>
+                    {% else %}
+                    <div class="sixteen wide">
+                        <div class="child-center">
+                            <a href="{% url 'accounts:registration' %}" class="massive ui primary button">
+
+                                Отдел ИБ
+                                <i class="user plus right icon"></i>
+                            </a>
+                        </div>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+{% block script %}
+    <script type="text/javascript">
+        $('.ui.checkbox').checkbox();
+    </script>
+{% endblock %}

@@ -1,0 +1,26 @@
+{% load static %}
+<nav>
+    <div class="ui container">
+        <ul class="left">
+            <li class="logo">
+                <a href="{% url 'main:index' %}"></a>
+            </li>
+            <li><a href="{% url 'main:index' %}">ИБ Главная</a></li>
+        </ul>
+        {% if request.user.is_authenticated %}
+            <ul class="right">
+                <li><a>{% if request.user.prepod %}{{ request.user.prepod.fio }}{% else %}
+                    {{ request.user.email }}{% endif %}</a></li>
+                {% if request.user.is_superuser %}
+                    <li><a href="/admin/"><i class="star plus icon"></i>Админ. панель</a></li>
+                {% endif %}
+                <li><a href="{% url 'accounts:logout' %}"><i class="sign out alternate icon"></i>Выход</a></li>
+            </ul>
+        {% else %}
+            <ul class="right">
+                <li><a href="{% url 'accounts:registration' %}"><i class="user plus icon"></i>Регистрация</a></li>
+                <li><a href="{% url 'accounts:login' %}"><i class="sign in alternate icon"></i>Вход</a></li>
+            </ul>
+        {% endif %}
+    </div>
+</nav>

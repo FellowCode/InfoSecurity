@@ -1,0 +1,40 @@
+.graphic-key {
+  width: 100%;
+  max-width: 500px;
+
+  .points {
+    position: relative;
+    float: left;
+    width: 100%;
+    cursor: pointer;
+
+    #loader{
+      z-index: 10000;
+    }
+
+    .line {
+      position: relative;
+      float: left;
+      width: 100%;
+
+      .point {
+        z-index: 1000;
+        position: relative;
+        cursor: pointer;
+        float: left;
+        width: 20px;
+        height: 20px;
+        margin: 37px;
+        background-color: var(--graphic-key-color);
+        border: solid var(--graphic-key-brd-color) 3px;
+        border-radius: 10px;
+
+        &.active{
+          width: 26px;
+          height: 26px;
+          margin: 34px;
+        }
+      }
+    }
+  }
+}
