@@ -18,6 +18,8 @@
 
     <link href="{% static 'css/semantic.min.css' %}?version=1" rel="stylesheet">
     <link href="{% static 'css/style.css' %}?version=12" rel="stylesheet">
+
+    <link rel="stylesheet" href="{% static '/css/calendar.min.css' %}" />
 </head>
 <body>
 <header>
@@ -33,7 +35,8 @@
 <script type="text/javascript" src="{% static 'js/cookie.js' %}?version=1"></script>
 <script type="text/javascript" src="{% static 'js/jquery-3.4.1.min.js' %}?version=1"></script>
 <script type="text/javascript" src="{% static 'js/semantic.min.js' %}?version=1"></script>
-<script type="text/javascript" src="{% static 'js/cite_format.js' %}?version=3"></script>
+<script type="text/javascript" src="{% static '/js/moment.js' %}"></script>
+<script type="text/javascript" src="{% static '/js/calendar.min.js' %}"></script>
 <script type="text/javascript">
     $(document).ready(function () {
         $('.ui.menu .item').click(function () {

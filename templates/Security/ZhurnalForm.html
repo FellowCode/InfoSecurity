@@ -26,7 +26,7 @@
                                                 {% endfor %}
                                             </div>
                                         </div>
-                                        <a href="/admin/Security/skziname/add/">Добавить</a>
+                                        <a id="add-skzi-name" style="cursor:pointer;">Добавить</a>
                                     </div>
                                     <div class="field">
                                         <label>Серийный номер</label>
@@ -154,8 +154,12 @@
                                 </div>
                                 <div class="field">
                                     <label>Дата ввода в действие</label>
-                                    <input type="text" name="surname" placeholder="Введите отчество..."
-                                           value="{{ form.surname.value|default_if_none:"" }}">
+                                    <div class="ui calendar" id="rangestart">
+                                        <div class="ui input left icon">
+                                            <i class="calendar icon"></i>
+                                            <input type="text" placeholder="">
+                                        </div>
+                                    </div>
                                 </div>
                                 {% if form.surname.errors %}
                                     <div class="ui error message">
@@ -166,8 +170,12 @@
                                 {% endif %}
                                 <div class="field">
                                     <label>Дата вывода из действия</label>
-                                    <input type="text" name="dolzhnost" placeholder="Введите должность..."
-                                           value="{{ form.dolzhnost.value|default_if_none:"" }}">
+                                    <div class="ui calendar" id="rangestart">
+                                        <div class="ui input left icon">
+                                            <i class="calendar icon"></i>
+                                            <input type="text" placeholder="">
+                                        </div>
+                                    </div>
                                 </div>
                                 {% if form.dolzhnost.errors %}
                                     <div class="ui error message">
@@ -227,6 +235,53 @@
                 $(this).addClass('loading')
             });
             $('.selection.dropdown').dropdown()
+            $('.ui.calendar').calendar({
+                type: 'date', text: {
+                    days: ['Вс', "Пн", "Вт", "Ср", "Чт", "Пт", "Сб"],
+                    months: ['Январь', 'Февраль', 'Март', 'Апрель', 'Май', 'Июнь', 'Июль', 'Август', 'Сентябрь', 'Октябрь', 'Ноябрь', 'Декабрь'],
+                    monthsShort: ['Янв', 'Фев', 'Мар', 'Апр', 'Май', 'Июнь', 'Июль', 'Авг', 'Сен', 'Окт', 'Ноя', 'Дек'],
+                    today: 'Сегодня',
+                    now: 'Сейчас',
+                    am: 'AM',
+                    pm: 'PM'
+                },
+                formatter: {
+                    date: function (date, settings) {
+                        if (!date) return '';
+                        var day = date.getDate() + '';
+                        if (day.length < 2) {
+                            day = '0' + day;
+                        }
+                        var month = (date.getMonth() + 1) + '';
+                        if (month.length < 2) {
+                            month = '0' + month;
+                        }
+                        var year = date.getFullYear();
+                        return day + '.' + month + '.' + year;
+                    }
+                }
+            })
+            $('#add-skzi-name').click(function () {
+                var url = '/admin/Security/skziname/add/'
+                var popup = window.open(url, 'Добавить наименавание СКЗИ', 'width=800, height=600');
+
+
+                var interval = setInterval(function () {
+                    if (!popup.location.href.includes(url)) {
+                        popup.close()
+                        clearInterval(interval)
+                    }
+                }, 500)
+
+                popup.onhashchange = function () {
+                    alert('aaa')
+                }
+
+                popup.onunload = function () {
+                    clearInterval(interval)
+                }
+
+            })
         })
     </script>
 {% endblock %}
