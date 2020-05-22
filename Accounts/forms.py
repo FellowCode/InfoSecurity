@@ -30,6 +30,8 @@ class RegistrationForm(forms.Form):
     first_name = forms.CharField()
     surname = forms.CharField()
 
+    dolzhnost = forms.CharField()
+
     def clean_email(self):
         email = self.cleaned_data['email']
         user = User.objects.get_or_none(email=email)

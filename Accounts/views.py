@@ -12,6 +12,8 @@ from django.db.models import Q
 import re
 from urllib.parse import unquote
 import json
+from utils.shortcuts import iredirect
+from utils.decorators import graphic_key as gr_key_decorator
 
 
 def login(request):
@@ -28,17 +30,28 @@ def login(request):
     return render(request, 'Accounts/Login.html', {'form': form})
 
 
-
 def graphic_key(request):
     if not request.user.is_authenticated:
         return redirect(reverse('accounts:login'))
+    status = request.GET.get('status')
     if request.method == 'POST':
         gr_key = request.POST.get('gr_key')
-        if request.user.gr_key == gr_key:
+        if status == 'new':
+            request.session['graphic_key'] = gr_key
+            return iredirect('accounts:graphic_key', get={'status': 'confirm'})
+        elif status == 'confirm':
+            if request.session['graphic_key'] == gr_key:
+                request.user.gr_key = gr_key
+                request.session['graphic_key'] = True
+                request.user.save()
+            else:
+                request.session.pop('graphic_key')
+            return iredirect('main:index')
+        elif request.user.gr_key == gr_key:
             request.session['graphic_key'] = True
-            return redirect(reverse('main:index'))
-        return redirect(reverse('accounts:login'))
-    return render(request, 'Accounts/GraphicKey.html')
+            return iredirect('main:index')
+        return iredirect('accounts:login')
+    return render(request, 'Accounts/GraphicKey.html', {'status': status})
 
 
 def admin_login(request):
@@ -57,9 +70,13 @@ def registration(request):
         form = RegistrationForm(request.POST)
         if form.is_valid():
             user = User.objects.create_user(email=form.cleaned_data['email'],
-                                            password=form.cleaned_data['fpassword'])
+                                            password=form.cleaned_data['fpassword'],
+                                            last_name=form.cleaned_data['last_name'],
+                                            first_name=form.cleaned_data['first_name'],
+                                            surname=form.cleaned_data['surname'],
+                                            dolzhnost=form.cleaned_data['dolzhnost'])
             auth.login(request, user)
-            return redirect(reverse('main:index'))
+            return iredirect('main:index')
         return render(request, 'Accounts/Registration.html', {'form': form})
     form = RegistrationForm()
     return render(request, 'Accounts/Registration.html', {'form': form})

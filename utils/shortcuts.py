@@ -31,7 +31,7 @@ def get_or_none(model, **kwargs):
 
 
 def build_url(*args, **kwargs):
-    get = kwargs.pop('get', {})
+    get = kwargs.pop('get', None)
     url = reverse(*args, kwargs=kwargs)
     if get:
         url += '?' + urllib.parse.urlencode(get)

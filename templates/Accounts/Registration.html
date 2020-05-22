@@ -14,7 +14,8 @@
                                 {% csrf_token %}
                                 <div class="field">
                                     <label>Email</label>
-                                    <input type="email" name="email" placeholder="Введите email..." value="{{ form.email.value|default_if_none:"" }}">
+                                    <input type="email" name="email" placeholder="Введите email..."
+                                           value="{{ form.email.value|default_if_none:"" }}">
                                 </div>
                                 {% if form.email.errors %}
                                     <div class="ui error message">
@@ -24,8 +25,57 @@
                                     </div>
                                 {% endif %}
                                 <div class="field">
+                                    <label>Фамилия</label>
+                                    <input type="text" name="last_name" placeholder="Введите фамилию..."
+                                           value="{{ form.last_name.value|default_if_none:"" }}">
+                                </div>
+                                {% if form.last_name.errors %}
+                                    <div class="ui error message">
+                                        {% for error in form.last_name.errors %}
+                                            <p>{{ error|safe }}</p>
+                                        {% endfor %}
+                                    </div>
+                                {% endif %}
+                                <div class="field">
+                                    <label>Имя</label>
+                                    <input type="text" name="first_name" placeholder="Введите имя..."
+                                           value="{{ form.first_name.value|default_if_none:"" }}">
+                                </div>
+                                {% if form.first_name.errors %}
+                                    <div class="ui error message">
+                                        {% for error in form.first_name.errors %}
+                                            <p>{{ error|safe }}</p>
+                                        {% endfor %}
+                                    </div>
+                                {% endif %}
+                                <div class="field">
+                                    <label>Отчество</label>
+                                    <input type="text" name="surname" placeholder="Введите отчество..."
+                                           value="{{ form.surname.value|default_if_none:"" }}">
+                                </div>
+                                {% if form.surname.errors %}
+                                    <div class="ui error message">
+                                        {% for error in form.surname.errors %}
+                                            <p>{{ error|safe }}</p>
+                                        {% endfor %}
+                                    </div>
+                                {% endif %}
+                                <div class="field">
+                                    <label>Должность</label>
+                                    <input type="text" name="dolzhnost" placeholder="Введите должность..."
+                                           value="{{ form.dolzhnost.value|default_if_none:"" }}">
+                                </div>
+                                {% if form.dolzhnost.errors %}
+                                    <div class="ui error message">
+                                        {% for error in form.dolzhnost.errors %}
+                                            <p>{{ error|safe }}</p>
+                                        {% endfor %}
+                                    </div>
+                                {% endif %}
+                                <div class="field">
                                     <label>Пароль</label>
-                                    <input type="password" name="fpassword" placeholder="Введите пароль..." value="{{ form.fpassword.value|default_if_none:"" }}">
+                                    <input type="password" name="fpassword" placeholder="Введите пароль..."
+                                           value="{{ form.fpassword.value|default_if_none:"" }}">
                                 </div>
                                 {% if form.fpassword.errors %}
                                     <div class="ui error message">
@@ -36,7 +86,8 @@
                                 {% endif %}
                                 <div class="field">
                                     <label>Повторите пароль</label>
-                                    <input type="password" name="spassword" placeholder="Введите пароль..." value="{{ form.spassword.value|default_if_none:"" }}">
+                                    <input type="password" name="spassword" placeholder="Введите пароль..."
+                                           value="{{ form.spassword.value|default_if_none:"" }}">
                                 </div>
                                 {% if form.spassword.errors %}
                                     <div class="ui error message">

@@ -10,7 +10,7 @@
                 <div class="content">
                     <div class="child-center">
                         <div class="form-container">
-                            <h2 class="ui center aligned header">Графический ключ</h2>
+                            <h2 class="ui center aligned header">{% if not status %}Графический ключ{% elif status == 'new' %}Новый графический ключ{% elif status == 'confirm' %}Повторите ключ{% endif %}</h2>
                             <form method="post">
                                 {% csrf_token %}
                                 <input type="hidden" name="gr_key">
