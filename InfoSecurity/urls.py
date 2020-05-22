@@ -21,5 +21,6 @@ urlpatterns = [
     path('admin/login/', admin_login),
     path('admin/', admin.site.urls),
     path('accounts/', include(('Accounts.urls', 'Accounts'), namespace='accounts')),
+    path('security/', include(('Security.urls', 'Security'), namespace='security')),
     path('', include(('Main.urls', 'Main'), namespace='main')),
 ]

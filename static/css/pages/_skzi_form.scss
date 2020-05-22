@@ -1,0 +1,28 @@
+.skzi-form {
+  width: 100%;
+  max-width: 600px;
+
+  .form-container {
+    margin-top: 20px;
+    width: 95%;
+    max-width: 450px;
+  }
+
+  .ui.form {
+    margin-top: 10px;
+    max-width: 450px;
+    width: 100%;
+
+    .field-block{
+      width: 100%;
+      padding: 20px;
+      margin-bottom: 15px;
+      border: solid var(--btn-primary-color) 3px;
+    }
+  }
+
+  button.ui.button {
+    margin-top: 20px;
+    min-width: 200px;
+  }
+}

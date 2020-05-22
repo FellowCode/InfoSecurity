@@ -29,16 +29,24 @@
                             </a>
                         </div>
                     </div>
+                    {% elif user.is_superuser %}
+                        {% for otdel in otdels %}
+                            <div class="sixteen wide">
+                                <div class="child-center">
+                                    <a href="{% iurl 'security:otdel' get_otdel='otdel.id' %}" class="massive ui primary button">
+                                        {{ otdel.name }}
+                                    </a>
+                                </div>
+                            </div>
+                        {% endfor %}
                     {% else %}
-                    <div class="sixteen wide">
-                        <div class="child-center">
-                            <a href="{% url 'accounts:registration' %}" class="massive ui primary button">
-
-                                Отдел ИБ
-                                <i class="user plus right icon"></i>
-                            </a>
+                        <div class="sixteen wide">
+                            <div class="child-center">
+                                <a href="{% iurl 'security:otdel' get_otdel='user.otdel.id' %}" class="massive ui primary button">
+                                    {{ user.otdel.name }}
+                                </a>
+                            </div>
                         </div>
-                    </div>
                     {% endif %}
                 </div>
             </div>

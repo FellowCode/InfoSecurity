@@ -1,0 +1,108 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Журнал СКЗИ | ПГУ им. "Шолом-Алейхема"{% endblock %}
+
+{% block content %}
+    <div class="ui container full-width">
+        <div class="child-center">
+            <div class="skzi-list cblock">
+                <div class="content">
+                    <h1 class="ui center aligned header">Журнал СКЗИ {{ request.session.otdel.name }}</h1>
+                    <div class="panel">
+                        <div class="buttons left">
+                            <a href="{% url 'security:zhurnal_form' %}" class="button primary ui large">Добавить</a>
+                        </div>
+                    </div>
+                    <div class="sixteen wide table-container">
+                        <div class="table-width">
+                            <table class="ui celled table tableFixHead">
+                                <thead>
+                                <tr>
+                                    <th rowspan="2">№ п/п</th>
+                                    <th rowspan="2">Наим. СКЗИ, эксплуатационной и технической документации к ним,
+                                        ключевых документов
+                                    </th>
+                                    <th rowspan="2">Серийные номера СКЗИ, эксплуатационной и технической документации к
+                                        ним, номера серий ключевых документов
+                                    </th>
+                                    <th rowspan="2">Номера экземпляров (криптографические номера) ключевых документов
+                                    </th>
+                                    <th colspan="2" class="center aligned">Отметка о получении</th>
+                                    <th colspan="3" class="center aligned">Отметка о рассылке(передаче)</th>
+                                    <th colspan="2" class="center aligned">Отметка о возврате</th>
+                                    <th rowspan="2">Дата ввода в действие</th>
+                                    <th rowspan="2">Дата вывода из действия</th>
+                                    <th colspan="2" class="center aligned">Отметка об уничтожении СКЗИ, ключевых документов</th>
+                                    <th rowspan="2">Примечание</th>
+                                </tr>
+                                <tr>
+                                    <th>От кого получены или ФИО сотрудника органа криптографической защиты,
+                                        изготовившего ключевые документы
+                                    </th>
+                                    <th>Дата и номер сопроводительного письма или дата изготовления ключевых документов
+                                        и расписка в изготовлении
+                                    </th>
+                                    <th>Кому разосланы (переданы)</th>
+                                    <th>Дата и номер сопроводительного письма</th>
+                                    <th>Дата и номер подтверждения или расписка в получении</th>
+                                    <th>Дата и номер сопроводительного письма</th>
+                                    <th>Дата и номер подтверждения</th>
+                                    <th>Дата уничтожения</th>
+                                    <th>Номер акта или расписка об уничтожении</th>
+                                </tr>
+                                <tr>
+                                    <th class="center aligned">1</th>
+                                    <th class="center aligned">2</th>
+                                    <th class="center aligned">3</th>
+                                    <th class="center aligned">4</th>
+                                    <th class="center aligned">5</th>
+                                    <th class="center aligned">6</th>
+                                    <th class="center aligned">7</th>
+                                    <th class="center aligned">8</th>
+                                    <th class="center aligned">9</th>
+                                    <th class="center aligned">10</th>
+                                    <th class="center aligned">11</th>
+                                    <th class="center aligned">12</th>
+                                    <th class="center aligned">13</th>
+                                    <th class="center aligned">14</th>
+                                    <th class="center aligned">15</th>
+                                    <th class="center aligned">16</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+{% block script %}
+    <script type="text/javascript" src="{% static 'js/table_sort.js' %}"></script>
+    <script type="text/javascript">
+        $('.ui.checkbox').checkbox();
+
+        $(document).ready(function () {
+            $('table').tablesort()
+            var $items = $('table tbody tr');
+            var $list = $('table tbody');
+            $('#search-btn').click(function () {
+                var query = $('input[name=search]').val().split(' ');
+                var $search_items = $items.filter(function () {
+                    var result = true;
+                    var disc = $(this).find('[data-label=Дисциплина]').text().toLowerCase();
+                    query.forEach(function (val, i, a) {
+                        result = disc.includes(val.toLowerCase());
+                    });
+                    return result
+                });
+                $list.html("");
+                $list.append($search_items);
+            })
+        })
+    </script>
+{% endblock %}
