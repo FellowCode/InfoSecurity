@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'Main',
     'Accounts',
     'Security',
+    'Ispdn',
 ]
 
 MIDDLEWARE = [
@@ -113,7 +114,7 @@ TIME_ZONE = 'UTC'
 
 USE_I18N = True
 
-USE_L10N = True
+USE_L10N = False
 
 USE_TZ = False
 
@@ -128,8 +129,20 @@ STATICFILES_DIRS = [
 
 ]
 
+MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, "media")
+
 LOGIN_URL = '/accounts/login/'
 
 AUTH_USER_MODEL = 'Accounts.User'
 
 SESSION_SERIALIZER = 'django.contrib.sessions.serializers.PickleSerializer'
+
+DATE_FORMAT = 'd.m.Y'
+DATE_INPUT_FORMATS = [
+    '%Y-%m-%d', '%m/%d/%Y', '%m/%d/%y', '%d.%m.%Y', # '2006-10-25', '10/25/2006', '10/25/06', '25.10.2006'
+    '%b %d %Y', '%b %d, %Y',            # 'Oct 25 2006', 'Oct 25, 2006'
+    '%d %b %Y', '%d %b, %Y',            # '25 Oct 2006', '25 Oct, 2006'
+    '%B %d %Y', '%B %d, %Y',            # 'October 25 2006', 'October 25, 2006'
+    '%d %B %Y', '%d %B, %Y',            # '25 October 2006', '25 October, 2006'
+]

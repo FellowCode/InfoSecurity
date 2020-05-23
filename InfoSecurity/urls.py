@@ -17,10 +17,18 @@ from django.contrib import admin
 from django.urls import path, include
 from Accounts.views import admin_login
 
+from django.conf import settings
+from django.conf.urls.static import static
+
+
+
 urlpatterns = [
     path('admin/login/', admin_login),
     path('admin/', admin.site.urls),
     path('accounts/', include(('Accounts.urls', 'Accounts'), namespace='accounts')),
     path('security/', include(('Security.urls', 'Security'), namespace='security')),
+    path('ispdn/', include(('Ispdn.urls', 'Ispdn'), namespace='ispdn')),
     path('', include(('Main.urls', 'Main'), namespace='main')),
 ]
+
+urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

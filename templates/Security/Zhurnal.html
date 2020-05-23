@@ -1,5 +1,6 @@
 {% extends 'base.html' %}
 {% load static %}
+{% load modified %}
 
 {% block title %}Журнал СКЗИ | ПГУ им. "Шолом-Алейхема"{% endblock %}
 
@@ -8,7 +9,7 @@
         <div class="child-center">
             <div class="skzi-list cblock">
                 <div class="content">
-                    <h1 class="ui center aligned header">Журнал СКЗИ {{ request.session.otdel.name }}</h1>
+                    <h1 class="ui center aligned header">Журнал СКЗИ</h1>
                     <div class="panel">
                         <div class="buttons left">
                             <a href="{% url 'security:zhurnal_form' %}" class="button primary ui large">Добавить</a>
@@ -16,7 +17,7 @@
                     </div>
                     <div class="sixteen wide table-container">
                         <div class="table-width">
-                            <table class="ui celled table tableFixHead">
+                            <table class="ui celled selectable table tableFixHead">
                                 <thead>
                                 <tr>
                                     <th rowspan="2">№ п/п</th>
@@ -33,7 +34,9 @@
                                     <th colspan="2" class="center aligned">Отметка о возврате</th>
                                     <th rowspan="2">Дата ввода в действие</th>
                                     <th rowspan="2">Дата вывода из действия</th>
-                                    <th colspan="2" class="center aligned">Отметка об уничтожении СКЗИ, ключевых документов</th>
+                                    <th colspan="2" class="center aligned">Отметка об уничтожении СКЗИ, ключевых
+                                        документов
+                                    </th>
                                     <th rowspan="2">Примечание</th>
                                 </tr>
                                 <tr>
@@ -71,7 +74,26 @@
                                 </tr>
                                 </thead>
                                 <tbody>
-
+                                {% for skzi in skzis %}
+                                    <tr data-id="{{ skzi.id }}">
+                                        <td>{{ skzis|length|substract:forloop.counter0 }}</td>
+                                        <td>{{ skzi.name.type }}</td>
+                                        <td>{{ skzi.serial_n }}</td>
+                                        <td>{{ skzi.ekz_n }}</td>
+                                        <td>{{ skzi.from_organ }}</td>
+                                        <td>{{ skzi.date_poluch }}, {{ skzi.nomer_poluch }}</td>
+                                        <td>{{ skzi.to_person.get_fio }}</td>
+                                        <td>{{ skzi.date_sopr }}, {{ skzi.nomer_sopr }}</td>
+                                        <td>{{ skzi.date_podtv }}, {{ skzi.nomer_podtv }}</td>
+                                        <td>{{ skzi.vozvr_date_sopr }}, {{ skzi.vozvr_nomer_sopr }}</td>
+                                        <td>{{ skzi.vozvr_date_podtv }}, {{ skzi.vozvr_nomer_podtv }}</td>
+                                        <td>{{ skzi.date_vvod }}</td>
+                                        <td>{{ skzi.date_vivod }}</td>
+                                        <td>{{ skzi.date_unichtozh }}</td>
+                                        <td>{{ skzi.nomer_acta }}</td>
+                                        <td>{{ skzi.primechanie }}</td>
+                                    </tr>
+                                {% endfor %}
                                 </tbody>
                             </table>
                         </div>
@@ -89,6 +111,10 @@
         $(document).ready(function () {
             $('table').tablesort()
             var $items = $('table tbody tr');
+            $items.click(function () {
+                var id = $(this).attr('data-id')
+                window.location.href = '{% url 'security:zhurnal_form' %}' + id + '/'
+            })
             var $list = $('table tbody');
             $('#search-btn').click(function () {
                 var query = $('input[name=search]').val().split(' ');
@@ -103,6 +129,7 @@
                 $list.html("");
                 $list.append($search_items);
             })
+
         })
     </script>
 {% endblock %}

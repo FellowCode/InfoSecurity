@@ -3,9 +3,6 @@ from django.contrib import admin
 from .models import *
 
 
-@admin.register(OtdelIR)
-class OtdelAdmin(admin.ModelAdmin):
-    pass
 
 
 @admin.register(SkziName)
@@ -46,3 +43,18 @@ class PolozhenieAdmin(admin.ModelAdmin):
 @admin.register(ProgOb)
 class ProgObAdmin(admin.ModelAdmin):
     list_display = ['nomer', 'name']
+
+
+@admin.register(OrganCrypto)
+class OrganCrypto(admin.ModelAdmin):
+    list_display = ['company', 'region']
+
+
+@admin.register(Skzi)
+class Skzi(admin.ModelAdmin):
+    pass
+
+
+@admin.register(Ispdn)
+class IspdnAdmin(admin.ModelAdmin):
+    pass

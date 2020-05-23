@@ -11,41 +11,32 @@
                     <h1 class="header center aligned ui">Отдел информационной безопасности</h1>
                     <h2 class="header center aligned ui">Приамурский государственный университет им. Шолом-Алейхема</h2>
                     {% if not user.is_authenticated %}
-                    <div class="sixteen wide">
-                        <div class="child-center">
-                            <a href="{% url 'accounts:login' %}" class="search-papers massive ui primary button">
-
-                                Вход
-                                <i class="sign in alternate right icon"></i>
-                            </a>
-                        </div>
-                    </div>
-                    <div class="sixteen wide">
-                        <div class="child-center">
-                            <a href="{% url 'accounts:registration' %}" class="massive ui primary button">
-
-                                Регистрация
-                                <i class="user plus right icon"></i>
-                            </a>
-                        </div>
-                    </div>
-                    {% elif user.is_superuser %}
-                        {% for otdel in otdels %}
-                            <div class="sixteen wide">
-                                <div class="child-center">
-                                    <a href="{% iurl 'security:otdel' get_otdel='otdel.id' %}" class="massive ui primary button">
-                                        {{ otdel.name }}
-                                    </a>
-                                </div>
-                            </div>
-                        {% endfor %}
-                    {% else %}
                         <div class="sixteen wide">
                             <div class="child-center">
-                                <a href="{% iurl 'security:otdel' get_otdel='user.otdel.id' %}" class="massive ui primary button">
-                                    {{ user.otdel.name }}
+                                <a href="{% url 'accounts:login' %}" class="search-papers massive ui primary button">
+
+                                    Вход
+                                    <i class="sign in alternate right icon"></i>
                                 </a>
                             </div>
+                        </div>
+                        <div class="sixteen wide">
+                            <div class="child-center">
+                                <a href="{% url 'accounts:registration' %}" class="massive ui primary button">
+
+                                    Регистрация
+                                    <i class="user plus right icon"></i>
+                                </a>
+                            </div>
+                        </div>
+                    {% else %}
+                        <div class="child-center">
+                            <a href="{% url 'security:zhurnal' %}" class="ui primary button massive razdel">СКЗИ</a>
+                            <a href="" class="ui primary button massive razdel">ПДн</a>
+                        </div>
+                        <div class="child-center">
+                            <a href="{% url 'ispdn:select' %}" class="ui primary button massive razdel">ИСПДн</a>
+                            <a href="" class="ui primary button massive razdel">Прочее</a>
                         </div>
                     {% endif %}
                 </div>

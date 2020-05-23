@@ -9,13 +9,16 @@
                 <div class="content">
                     <div class="child-center">
                         <div class="form-container">
+                            <a href="{% url 'security:zhurnal' %}">Журнал</a>
                             <h2 class="ui center aligned header">Запись СКЗИ</h2>
                             <form class="ui form error" method="post">
                                 {% csrf_token %}
+                                <input type="hidden" name="otdel" value="{{ request.session.otdel.id }}">
                                 <div class="field-block">
                                     <div class="field">
                                         <label>Наименование СКЗИ</label>
-                                        <div class="ui selection dropdown">
+                                        <div id="name_skzi_dropdown" class="ui selection dropdown"
+                                             data-preselect="{{ form.name.value }}">
                                             <input type="hidden" name="name">
                                             <i class="dropdown icon"></i>
                                             <div class="default text">Наименование СКЗИ</div>
@@ -26,194 +29,209 @@
                                                 {% endfor %}
                                             </div>
                                         </div>
-                                        <a id="add-skzi-name" style="cursor:pointer;">Добавить</a>
+                                        <a href="/admin/Security/skziname/" class="popup" data-dropdown-id="name_skzi">Управление
+                                            списком</a>
                                     </div>
                                     <div class="field">
                                         <label>Серийный номер</label>
-                                        <input type="email" name="email" placeholder="Введите email..."
-                                               value="{{ form.email.value|default_if_none:"" }}">
+                                        <input type="text" name="serial_n" placeholder="Номер"
+                                               value="{{ form.serial_n.value|default_if_none:"" }}">
                                     </div>
-                                    {% if form.email.errors %}
-                                        <div class="ui error message">
-                                            {% for error in form.email.errors %}
-                                                <p>{{ error|safe }}</p>
-                                            {% endfor %}
-                                        </div>
-                                    {% endif %}
                                     <div class="field">
-                                        <label>Номер экз.</label>
-                                        <input type="text" name="last_name" placeholder="Введите фамилию..."
-                                               value="{{ form.last_name.value|default_if_none:"" }}">
+                                        <label>Номера экземпляров</label>
+                                        <input type="text" name="ekz_n" placeholder="Номера"
+                                               value="{{ form.ekz_n.value|default_if_none:"" }}">
                                     </div>
-                                    {% if form.last_name.errors %}
-                                        <div class="ui error message">
-                                            {% for error in form.last_name.errors %}
-                                                <p>{{ error|safe }}</p>
-                                            {% endfor %}
-                                        </div>
-                                    {% endif %}
                                 </div>
                                 <div class="field-block">
                                     <h3>Отметка о получении</h3>
                                     <div class="field">
                                         <label>От кого</label>
-                                        <div class="ui selection dropdown">
-                                            <input type="hidden" name="name">
+                                        <div id="from_organ_dropdown" class="ui selection dropdown"
+                                             data-preselect="{{ form.from_organ.value }}">
+                                            <input type="hidden" name="from_organ">
                                             <i class="dropdown icon"></i>
-                                            <div class="default text">Сотрудник / Студент</div>
+                                            <div class="default text">Орган криптозащиты</div>
                                             <div class="menu">
-                                                {% for person in persons %}
+                                                {% for organ in organs_crypto %}
                                                     <div class="item"
-                                                         data-value="{{ person.id }}">{{ person.get_fio }}</div>
+                                                         data-value="{{ organ.id }}">{{ organ }}</div>
                                                 {% endfor %}
                                             </div>
                                         </div>
-                                        <a href="/admin/Security/person/add/">Добавить</a>
+                                        <a href="/admin/Security/organcrypto/" class="popup"
+                                           data-dropdown-id="from_organ_dropdown">Управление списком</a>
                                     </div>
                                     <div class="field">
-                                        <label>Дата и номер</label>
-                                        <input type="text" name="first_name" placeholder="Введите имя..."
-                                               value="{{ form.first_name.value|default_if_none:"" }}">
-                                    </div>
-                                    {% if form.first_name.errors %}
-                                        <div class="ui error message">
-                                            {% for error in form.first_name.errors %}
-                                                <p>{{ error|safe }}</p>
-                                            {% endfor %}
+                                        <label>Дата и номер сопроводительного письма</label>
+                                        <div class="two fields">
+                                            <div class="six wide field">
+                                                <div class="ui calendar">
+                                                    <div class="ui input left icon">
+                                                        <i class="calendar icon"></i>
+                                                        <input type="text" name="date_poluch" placeholder="Дата"
+                                                               value="{{ form.date_poluch.value|default_if_none:'' }}">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="ten wide field">
+                                                <input type="text" name="nomer_poluch" placeholder="Номер"
+                                                       value="{{ form.nomer_poluch.value|default_if_none:"" }}">
+                                            </div>
                                         </div>
-                                    {% endif %}
+                                    </div>
                                 </div>
                                 <div class="field-block">
                                     <h3>Отметка о рассылке</h3>
                                     <div class="field">
                                         <label>Кому</label>
-                                        <div class="ui selection dropdown">
-                                            <input type="hidden" name="name">
+                                        <div id="to_person_dropdown" class="ui selection dropdown" data-preselect="{{ form.to_person.value }}">
+                                            <input type="hidden" name="to_person">
                                             <i class="dropdown icon"></i>
-                                            <div class="default text">Сотрудник / Студент</div>
+                                            <div class="default text"></div>
                                             <div class="menu">
-                                                {% for person in persons %}
+                                                {% for fio in fio_rassilki %}
                                                     <div class="item"
-                                                         data-value="{{ person.id }}">{{ person.get_fio }}</div>
+                                                         data-value="{{ fio.id }}">{{ fio.get_fio }}</div>
                                                 {% endfor %}
                                             </div>
                                         </div>
-                                        <a href="/admin/Security/person/add/">Добавить</a>
+                                        <a href="/admin/Security/fiorassilki/" class="popup" data-dropdown-id="to_person_dropdown">Управление списком</a>
                                     </div>
                                     <div class="field">
                                         <label>Дата и номер сопроводительного письма</label>
-                                        <input type="text" name="surname" placeholder="Введите отчество..."
-                                               value="{{ form.surname.value|default_if_none:"" }}">
-                                    </div>
-                                    {% if form.surname.errors %}
-                                        <div class="ui error message">
-                                            {% for error in form.surname.errors %}
-                                                <p>{{ error|safe }}</p>
-                                            {% endfor %}
+                                        <div class="two fields">
+                                            <div class="six wide field">
+                                                <div class="ui calendar">
+                                                    <div class="ui input left icon">
+                                                        <i class="calendar icon"></i>
+                                                        <input type="text" name="date_sopr" placeholder="Дата"
+                                                               value="{{ form.date_sopr.value|default_if_none:'' }}">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="ten wide field">
+                                                <input type="text" name="nomer_sopr" placeholder="Номер"
+                                                       value="{{ form.nomer_sopr.value|default_if_none:"" }}">
+                                            </div>
                                         </div>
-                                    {% endif %}
+                                    </div>
                                     <div class="field">
-                                        <label>Дата и номер подтверждения</label>
-                                        <input type="text" name="dolzhnost" placeholder="Введите должность..."
-                                               value="{{ form.dolzhnost.value|default_if_none:"" }}">
-                                    </div>
-                                    {% if form.dolzhnost.errors %}
-                                        <div class="ui error message">
-                                            {% for error in form.dolzhnost.errors %}
-                                                <p>{{ error|safe }}</p>
-                                            {% endfor %}
+                                        <label>Дата и номер подтверждения или расписка</label>
+                                        <div class="two fields">
+                                            <div class="six wide field">
+                                                <div class="ui calendar">
+                                                    <div class="ui input left icon">
+                                                        <i class="calendar icon"></i>
+                                                        <input type="text" name="date_podtv" placeholder="Дата"
+                                                               value="{{ form.date_podtv.value|default_if_none:'' }}">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="ten wide field">
+                                                <input type="text" name="nomer_podtv" placeholder="Номер"
+                                                       value="{{ form.nomer_podtv.value|default_if_none:"" }}">
+                                            </div>
                                         </div>
-                                    {% endif %}
+                                    </div>
+                                    <div class="inline field">
+                                        <div class="ui checkbox {% if form.podtv.value %}checked{% endif %}">
+                                            <input type="checkbox" tabindex="0" class="hidden" name="podtv" {% if form.podtv.value %}checked{% endif %}>
+                                            <label>Расписка о получении</label>
+                                        </div>
+                                    </div>
                                 </div>
                                 <div class="field-block">
                                     <h3>Отметка о возврате</h3>
                                     <div class="field">
                                         <label>Дата и номер сопроводительного письма</label>
-                                        <input type="text" name="surname" placeholder="Введите отчество..."
-                                               value="{{ form.surname.value|default_if_none:"" }}">
-                                    </div>
-                                    {% if form.surname.errors %}
-                                        <div class="ui error message">
-                                            {% for error in form.surname.errors %}
-                                                <p>{{ error|safe }}</p>
-                                            {% endfor %}
+                                        <div class="two fields">
+                                            <div class="six wide field">
+                                                <div class="ui calendar">
+                                                    <div class="ui input left icon">
+                                                        <i class="calendar icon"></i>
+                                                        <input type="text" name="vozvr_date_sopr" placeholder="Дата"
+                                                               value="{{ form.vozvr_date_sopr.value|default_if_none:'' }}">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="ten wide field">
+                                                <input type="text" name="vozvr_nomer_sopr" placeholder="Номер"
+                                                       value="{{ form.vozvr_nomer_sopr.value|default_if_none:"" }}">
+                                            </div>
                                         </div>
-                                    {% endif %}
+                                    </div>
                                     <div class="field">
                                         <label>Дата и номер подтверждения</label>
-                                        <input type="text" name="dolzhnost" placeholder="Введите должность..."
-                                               value="{{ form.dolzhnost.value|default_if_none:"" }}">
-                                    </div>
-                                    {% if form.dolzhnost.errors %}
-                                        <div class="ui error message">
-                                            {% for error in form.dolzhnost.errors %}
-                                                <p>{{ error|safe }}</p>
-                                            {% endfor %}
-                                        </div>
-                                    {% endif %}
-                                </div>
-                                <div class="field">
-                                    <label>Дата ввода в действие</label>
-                                    <div class="ui calendar" id="rangestart">
-                                        <div class="ui input left icon">
-                                            <i class="calendar icon"></i>
-                                            <input type="text" placeholder="">
+                                        <div class="two fields">
+                                            <div class="six wide field">
+                                                <div class="ui calendar">
+                                                    <div class="ui input left icon">
+                                                        <i class="calendar icon"></i>
+                                                        <input type="text" name="vozvr_date_podtv" placeholder="Дата"
+                                                               value="{{ form.vozvr_date_podtv.value|default_if_none:'' }}">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="ten wide field">
+                                                <input type="text" name="vozvr_nomer_podtv" placeholder="Номер"
+                                                       value="{{ form.vozvr_nomer_podtv.value|default_if_none:"" }}">
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
-                                {% if form.surname.errors %}
-                                    <div class="ui error message">
-                                        {% for error in form.surname.errors %}
-                                            <p>{{ error|safe }}</p>
-                                        {% endfor %}
+                                <div class="two fields">
+                                    <div class="eight wide field">
+                                        <label>Дата ввода в действие</label>
+                                        <div class="ui calendar">
+                                            <div class="ui input left icon">
+                                                <i class="calendar icon"></i>
+                                                <input type="text" name="date_vvod" placeholder="Дата"
+                                                       value="{{ form.date_vvod.value|default_if_none:'' }}">
+                                            </div>
+                                        </div>
                                     </div>
-                                {% endif %}
-                                <div class="field">
-                                    <label>Дата вывода из действия</label>
-                                    <div class="ui calendar" id="rangestart">
-                                        <div class="ui input left icon">
-                                            <i class="calendar icon"></i>
-                                            <input type="text" placeholder="">
+                                    <div class="eight wide field">
+                                        <label>Дата вывода из действия</label>
+                                        <div class="ui calendar">
+                                            <div class="ui input left icon">
+                                                <i class="calendar icon"></i>
+                                                <input type="text" name="date_vivod" placeholder="Дата"
+                                                       value="{{ form.date_vivod.value|default_if_none:'' }}">
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
-                                {% if form.dolzhnost.errors %}
-                                    <div class="ui error message">
-                                        {% for error in form.dolzhnost.errors %}
-                                            <p>{{ error|safe }}</p>
-                                        {% endfor %}
-                                    </div>
-                                {% endif %}
                                 <div class="field-block">
                                     <h3>Отметка об уничтожении</h3>
-                                    <div class="field">
-                                        <label>Дата уничтожения</label>
-                                        <input type="text" name="surname" placeholder="Введите отчество..."
-                                               value="{{ form.surname.value|default_if_none:"" }}">
-                                    </div>
-                                    {% if form.surname.errors %}
-                                        <div class="ui error message">
-                                            {% for error in form.surname.errors %}
-                                                <p>{{ error|safe }}</p>
-                                            {% endfor %}
+                                    <div class="two fields">
+                                        <div class="six wide field">
+                                            <label>Дата уничтожения</label>
+                                            <div class="ui calendar">
+                                                <div class="ui input left icon">
+                                                    <i class="calendar icon"></i>
+                                                    <input type="text" name="date_unichtozh" placeholder="Дата"
+                                                           value="{{ form.date_unichtozh.value|default_if_none:'' }}">
+                                                </div>
+                                            </div>
                                         </div>
-                                    {% endif %}
-                                    <div class="field">
-                                        <label>Номер акта уничтожения</label>
-                                        <input type="text" name="dolzhnost" placeholder="Введите должность..."
-                                               value="{{ form.dolzhnost.value|default_if_none:"" }}">
-                                    </div>
-                                    {% if form.dolzhnost.errors %}
-                                        <div class="ui error message">
-                                            {% for error in form.dolzhnost.errors %}
-                                                <p>{{ error|safe }}</p>
-                                            {% endfor %}
+                                        <div class="ten wide field">
+                                            <label>Номер акта уничтожения</label>
+                                            <input type="text" name="nomer_acta" placeholder="Номер"
+                                                   value="{{ form.nomer_acta.value|default_if_none:"" }}">
                                         </div>
-                                    {% endif %}
+                                    </div>
+                                    <div class="inline field">
+                                        <div class="ui checkbox {% if form.act_podtv.value %}checked{% endif %}">
+                                            <input type="checkbox" tabindex="0" class="hidden" name="act_podtv" {% if form.act_podtv.value %}checked{% endif %}>
+                                            <label>Расписка об уничтожении</label>
+                                        </div>
+                                    </div>
                                 </div>
                                 <div class="field">
                                     <label>Примечание</label>
-                                    <textarea rows="2"></textarea>
+                                    <textarea name="primechanie"
+                                              rows="2">{{ form.primechanie.value|default_if_none:'' }}</textarea>
                                 </div>
                                 <div class="child-center">
                                     <button class="large ui primary button">
@@ -227,6 +245,17 @@
             </div>
         </div>
     </div>
+    <div id="add-skzi-name-modal" class="ui modal">
+        <div class="header">Header</div>
+        <div class="content no-shadow">
+            <form id="add-skzi-name-form" class="ui form">
+            </form>
+        </div>
+        <div class="actions">
+            <button class="ui button primary" form="add-skzi-name-form">Сохранить</button>
+            <div class="ui cancel button">Cancel</div>
+        </div>
+    </div>
 {% endblock %}
 {% block script %}
     <script type="text/javascript">
@@ -234,7 +263,33 @@
             $('button').click(function () {
                 $(this).addClass('loading')
             });
-            $('.selection.dropdown').dropdown()
+
+            function UpdateDropdown($dropdown, dropdown_id) {
+                $.get(window.location.href, function (data) {
+                    $dropdown.replaceWith($(data).find(`#${dropdown_id}`))
+                    $('#' + dropdown_id).dropdown()
+                })
+            }
+
+            $('a.popup').click(function () {
+                var popup = window.open($(this).attr('href'), 'popup', 'width=800,height=600')
+                var dropdown_id = $(this).attr('data-dropdown-id')
+                var $dropdown = $('#' + dropdown_id)
+
+
+                var popupTick = setInterval(function () {
+                    if (popup.closed) {
+                        clearInterval(popupTick)
+                        UpdateDropdown($dropdown, dropdown_id)
+                    }
+                }, 300)
+
+                return false
+            })
+            $('.selection.dropdown').each(function (i) {
+                $(this).dropdown('set selected', $(this).attr('data-preselect'))
+            })
+            $('.ui.checkbox').checkbox()
             $('.ui.calendar').calendar({
                 type: 'date', text: {
                     days: ['Вс', "Пн", "Вт", "Ср", "Чт", "Пт", "Сб"],
@@ -261,25 +316,8 @@
                     }
                 }
             })
-            $('#add-skzi-name').click(function () {
-                var url = '/admin/Security/skziname/add/'
-                var popup = window.open(url, 'Добавить наименавание СКЗИ', 'width=800, height=600');
-
-
-                var interval = setInterval(function () {
-                    if (!popup.location.href.includes(url)) {
-                        popup.close()
-                        clearInterval(interval)
-                    }
-                }, 500)
-
-                popup.onhashchange = function () {
-                    alert('aaa')
-                }
-
-                popup.onunload = function () {
-                    clearInterval(interval)
-                }
+            $('#add-skzi-name-form').submit(function (e) {
+                e.preventDefault()
 
             })
         })

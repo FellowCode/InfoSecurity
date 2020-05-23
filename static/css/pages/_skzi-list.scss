@@ -51,23 +51,23 @@
     .table-width {
       max-width: 2000px;
 
-      table thead th {
-        position: sticky;
-        top: 0;
-        white-space: normal !important;
-        word-wrap: break-spaces;
-        vertical-align: top;
-      }
-    }
+      table {
+        thead th {
 
-
-    tr {
-      &.nagruzka-empty {
-        background-color: #fff5da;
-      }
-
-      &.nagruzka-error {
-        background-color: #ffc0c0;
+          position: sticky;
+          top: 0;
+          white-space: normal !important;
+          word-wrap: break-spaces;
+          vertical-align: top;
+        }
+        tbody tr{
+          cursor: pointer;
+          font-size: 14px;
+          .button.download{
+            padding-top: 5px;
+            padding-bottom: 5px;
+          }
+        }
       }
     }
   }

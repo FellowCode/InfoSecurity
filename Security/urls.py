@@ -4,6 +4,6 @@ from .views import *
 
 urlpatterns = [
     path('zhurnal/', zhurnal, name='zhurnal'),
+    path('zhurnal-form/<id>/', zhurnal_form, name='zhurnal_form_id'),
     path('zhurnal-form/', zhurnal_form, name='zhurnal_form'),
-    path('otdel/', otdel_ib, name='otdel'),
 ]
