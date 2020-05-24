@@ -9,10 +9,33 @@
                 <div class="content">
                     <div class="child-center">
                         <div class="form-container">
-                            <a href="{% url 'ispdn:prikazi' ispdn_id=ispdn_id %}">ИСПДн</a>
+                            {% if source %}
+                                <a href="{% url 'ispdn:prikazi' ispdn_id=source %}">Приказы</a>
+                            {% else %}
+                                <a href="{% url 'ispdn:prikazi_all' %}">Приказы</a>
+                            {% endif %}
                             <h2 class="ui center aligned header">Приказ</h2>
                             <form class="ui form error" method="post" enctype="multipart/form-data">
                                 {% csrf_token %}
+                                {% if form.name.value %}
+                                    {% for ispdn in ispdns %}
+                                        <div class="six wide inline field">
+                                            <div class="ui checkbox {% if ispdn.id in instance_ispdns %} checked {% endif %}">
+                                                <input type="checkbox" tabindex="0" class="hidden" name="ispdn" value="{{ ispdn.id }}"  {% if ispdn.id in instance_ispdns %} checked {% endif %}>
+                                                <label>{{ ispdn.name }}</label>
+                                            </div>
+                                        </div>
+                                    {% endfor %}
+                                {% else %}
+                                    {% for ispdn in ispdns %}
+                                        <div class="six wide inline field">
+                                            <div class="ui checkbox {% if source == ispdn.id %} checked {% endif %}">
+                                                <input type="checkbox" tabindex="0" class="hidden" name="ispdn" value="{{ ispdn.id }}"  {% if source == ispdn.id %} checked {% endif %}>
+                                                <label>{{ ispdn.name }}</label>
+                                            </div>
+                                        </div>
+                                    {% endfor %}
+                                {% endif %}
                                 <div class="field">
                                     <label>Номер</label>
                                     <input type="text" name="nomer" placeholder="Номер"
@@ -53,7 +76,7 @@
                                 </div>
                                 <div class="field">
                                     <div class="ui action input">
-                                        <input type="file" name="file" class="hide" accept=".doc, .docx">
+                                        <input type="file" name="file" class="hide" accept=".doc, .docx, .xls, .xlsx">
                                         <input id="filename" type="text"
                                                value="{{ form.file.value.name|default_if_none:'' }}" readonly>
                                         <a class="ui teal right labeled icon button" id="file-trigger">

@@ -8,7 +8,7 @@ class PrikazForm(ModelForm):
         exclude = ['id']
 
 
-class InstruztForm(ModelForm):
+class InstructForm(ModelForm):
     class Meta:
         model = Instruct
         exclude = ['id']

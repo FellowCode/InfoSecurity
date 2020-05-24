@@ -8,18 +8,18 @@
         <div class="child-center">
             <div class="ispdn cblock">
                 <div class="content">
-                    <h1 class="ui center aligned header">ИСПДн</h1>
+                    <h1 class="ui center aligned header">ИСПДн {{ ispdn.name }}</h1>
                     <div class="child-center">
-                        <a href="{% url 'ispdn:prikazi' ispdn_id=ispdn_id %}" class="ui button primary massive">Приказы</a>
-                        <a href="" class="ui button primary massive">Положения</a>
+                        <a href="{% iurl 'ispdn:prikazi' ispdn_id='ispdn.id' %}" class="ui button primary massive">Приказы</a>
+                        <a href="{% iurl 'ispdn:polozhenia' ispdn_id='ispdn.id' %}" class="ui button primary massive">Положения</a>
                     </div>
                     <div class="child-center">
-                        <a href="" class="ui button primary massive">Инструкции</a>
+                        <a href="{% iurl 'ispdn:instructs' ispdn_id='ispdn.id' %}" class="ui button primary massive">Инструкции</a>
                         <a href="" class="ui button primary massive">Разное</a>
                     </div>
                     <div class="child-center">
-                        <a href="" class="ui button primary massive">Руководства</a>
-                        <a href="" class="ui button primary massive">Прогр. обесп.</a>
+                        <a href="{% iurl 'ispdn:rukovodstva' ispdn_id='ispdn.id' %}" class="ui button primary massive">Руководства</a>
+                        <a href="{% iurl 'ispdn:progob' ispdn_id='ispdn.id' %}" class="ui button primary massive">Прогр. обесп.</a>
                     </div>
                 </div>
             </div>

@@ -1,0 +1,161 @@
+{% extends 'base.html' %}
+
+{% block title %}Запись СКЗИ | ПГУ им. "Шолом-Алейхема"{% endblock %}
+
+{% block content %}
+    <div class="ui container">
+        <div class="child-center">
+            <div class="skzi-form cblock">
+                <div class="content">
+                    <div class="child-center">
+                        <div class="form-container">
+                            {% if source %}
+                                <a href="{% url 'ispdn:polozhenia' ispdn_id=source %}">Положения</a>
+                            {% else %}
+                                <a href="{% url 'ispdn:polozhenia_all' %}">Положения</a>
+                            {% endif %}
+                            <h2 class="ui center aligned header">Положение</h2>
+                            <form class="ui form error" method="post" enctype="multipart/form-data">
+                                {% csrf_token %}
+                                {% if form.name.value %}
+                                    {% for ispdn in ispdns %}
+                                        <div class="six wide inline field">
+                                            <div class="ui checkbox {% if ispdn.id in instance_ispdns %} checked {% endif %}">
+                                                <input type="checkbox" tabindex="0" class="hidden" name="ispdn" value="{{ ispdn.id }}"  {% if ispdn.id in instance_ispdns %} checked {% endif %}>
+                                                <label>{{ ispdn.name }}</label>
+                                            </div>
+                                        </div>
+                                    {% endfor %}
+                                {% else %}
+                                    {% for ispdn in ispdns %}
+                                        <div class="six wide inline field">
+                                            <div class="ui checkbox {% if source == ispdn.id %} checked {% endif %}">
+                                                <input type="checkbox" tabindex="0" class="hidden" name="ispdn" value="{{ ispdn.id }}"  {% if source == ispdn.id %} checked {% endif %}>
+                                                <label>{{ ispdn.name }}</label>
+                                            </div>
+                                        </div>
+                                    {% endfor %}
+                                {% endif %}
+                                <div class="field">
+                                    <label>Номер</label>
+                                    <input type="text" name="nomer" placeholder="Номер"
+                                           value="{{ form.nomer.value|default_if_none:"" }}">
+                                </div>
+                                <div class="field">
+                                    <label>Название</label>
+                                    <input type="text" name="name" placeholder="Название"
+                                           value="{{ form.name.value|default_if_none:"" }}">
+                                </div>
+                                <div class="field">
+                                    <label>Ответственный</label>
+                                    <div id="otvetstv_dropdown" class="ui selection dropdown"
+                                         data-preselect="{{ form.ovetstv.value }}">
+                                        <input type="hidden" name="ovetstv">
+                                        <i class="dropdown icon"></i>
+                                        <div class="default text">Сотрудник / Студент</div>
+                                        <div class="menu">
+                                            {% for person in persons %}
+                                                <div class="item"
+                                                     data-value="{{ person.id }}">{{ person.get_fio }}</div>
+                                            {% endfor %}
+                                        </div>
+                                    </div>
+                                    <a href="/admin/Security/person/" class="popup"
+                                       data-dropdown-id="otvetstv_dropdown">Управление
+                                        списком</a>
+                                </div>
+                                <div class="field">
+                                    <div class="ui action input">
+                                        <input type="file" name="file" class="hide" accept=".doc, .docx, .xls, .xlsx">
+                                        <input id="filename" type="text"
+                                               value="{{ form.file.value.name|default_if_none:'' }}" readonly>
+                                        <a class="ui teal right labeled icon button" id="file-trigger">
+                                            <i class="upload icon"></i>
+                                            Выбрать
+                                        </a>
+                                    </div>
+                                </div>
+                                <div class="child-center">
+                                    <button class="large ui primary button">
+                                        Сохранить
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+{% block script %}
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $('button').click(function () {
+                $(this).addClass('loading')
+            });
+
+            function UpdateDropdown($dropdown, dropdown_id) {
+                $.get(window.location.href, function (data) {
+                    $dropdown.replaceWith($(data).find(`#${dropdown_id}`))
+                    $('#' + dropdown_id).dropdown()
+                })
+            }
+
+            $('a.popup').click(function () {
+                var popup = window.open($(this).attr('href'), 'popup', 'width=800,height=600')
+                var dropdown_id = $(this).attr('data-dropdown-id')
+                var $dropdown = $('#' + dropdown_id)
+
+
+                var popupTick = setInterval(function () {
+                    if (popup.closed) {
+                        clearInterval(popupTick)
+                        UpdateDropdown($dropdown, dropdown_id)
+                    }
+                }, 300)
+
+                return false
+            })
+            var $file_input = $('input[type=file][name=file]')
+            $('#file-trigger').click(function () {
+                $file_input.trigger('click')
+            })
+            $file_input.change(function () {
+                var path = $file_input.val().split('\\')
+                $('#filename').val(path[path.length - 1])
+            })
+
+            $('.selection.dropdown').each(function (i) {
+                $(this).dropdown('set selected', $(this).attr('data-preselect'))
+            })
+            $('.ui.checkbox').checkbox()
+            $('.ui.calendar').calendar({
+                type: 'date', text: {
+                    days: ['Вс', "Пн", "Вт", "Ср", "Чт", "Пт", "Сб"],
+                    months: ['Январь', 'Февраль', 'Март', 'Апрель', 'Май', 'Июнь', 'Июль', 'Август', 'Сентябрь', 'Октябрь', 'Ноябрь', 'Декабрь'],
+                    monthsShort: ['Янв', 'Фев', 'Мар', 'Апр', 'Май', 'Июнь', 'Июль', 'Авг', 'Сен', 'Окт', 'Ноя', 'Дек'],
+                    today: 'Сегодня',
+                    now: 'Сейчас',
+                    am: 'AM',
+                    pm: 'PM'
+                },
+                formatter: {
+                    date: function (date, settings) {
+                        if (!date) return '';
+                        var day = date.getDate() + '';
+                        if (day.length < 2) {
+                            day = '0' + day;
+                        }
+                        var month = (date.getMonth() + 1) + '';
+                        if (month.length < 2) {
+                            month = '0' + month;
+                        }
+                        var year = date.getFullYear();
+                        return day + '.' + month + '.' + year;
+                    }
+                }
+            })
+        })
+    </script>
+{% endblock %}

@@ -126,10 +126,20 @@ class Ispdn(models.Model):
         verbose_name = 'ИСПДн'
         verbose_name_plural = 'ИСПДн'
 
+
+def ispdn_filename(dir, model, filename):
+    try:
+        obj = model.objects.latest('id')
+        return '/'.join(['ispdn', dir, f"{obj.id + 1}-{filename}"])
+    except:
+        return '/'.join(['ispdn', dir, f"0-{filename}"])
+
+
+
+
 class Prikaz(models.Model):
     def content_file_name(instance, filename):
-        obj = Prikaz.objects.latest('id')
-        return '/'.join(['ispdn', 'prikazi', f"{obj.id+1}-{instance.name}.{filename.split('.')[-1]}"])
+        return ispdn_filename('prikazi', Prikaz, filename)
 
     objects = MyManager()
     nomer = models.IntegerField(verbose_name='Номер')
@@ -151,10 +161,14 @@ class Prikaz(models.Model):
 
 
 class Instruct(models.Model):
+    def content_file_name(instance, filename):
+        return ispdn_filename('istructs', Instruct, filename)
+
     objects = MyManager()
     nomer = models.IntegerField(verbose_name='Номер')
     name = models.CharField(max_length=256, verbose_name='Название')
     ovetstv = models.ForeignKey('Person', on_delete=models.SET_NULL, null=True, verbose_name='Ответственный')
+    file = models.FileField(null=True, upload_to=content_file_name)
 
     def __str__(self):
         return f'{self.nomer} {self.name}'
@@ -165,9 +179,13 @@ class Instruct(models.Model):
 
 
 class Rukovodstvo(models.Model):
+    def content_file_name(instance, filename):
+        return ispdn_filename('rukovodstva', Rukovodstvo, filename)
+
     objects = MyManager()
     nomer = models.IntegerField(verbose_name='Номер')
     name = models.CharField(max_length=256, verbose_name='Название')
+    file = models.FileField(null=True, upload_to=content_file_name)
 
     def __str__(self):
         return f'{self.nomer} {self.name}'
@@ -178,10 +196,14 @@ class Rukovodstvo(models.Model):
 
 
 class Polozhenie(models.Model):
+    def content_file_name(instance, filename):
+        return ispdn_filename('polozhenia', Polozhenie, filename)
+
     objects = MyManager()
     nomer = models.IntegerField(verbose_name='Номер')
     name = models.CharField(max_length=256, verbose_name='Название')
     ovetstv = models.ForeignKey('Person', on_delete=models.SET_NULL, null=True, verbose_name='Ответственный')
+    file = models.FileField(null=True, upload_to=content_file_name)
 
     def __str__(self):
         return f'{self.nomer} {self.name}'
@@ -192,9 +214,13 @@ class Polozhenie(models.Model):
 
 
 class ProgOb(models.Model):
+    def content_file_name(instance, filename):
+        return ispdn_filename('progob', ProgOb, filename)
+
     objects = MyManager()
     nomer = models.IntegerField(verbose_name='Номер')
     name = models.CharField(max_length=256, verbose_name='Название')
+    file = models.FileField(null=True, upload_to=content_file_name)
 
     def __str__(self):
         return f'{self.nomer} {self.name}'

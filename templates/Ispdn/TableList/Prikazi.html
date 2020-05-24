@@ -8,12 +8,18 @@
         <div class="child-center">
             <div class="skzi-list cblock">
                 <div class="content">
-                    <h1 class="ui center aligned header">Приказы</h1>
+                    <h1 class="ui center aligned header">Приказы {% if ispdn %}{{ ispdn.name }}{% endif %}</h1>
                     <div class="panel">
                         <div class="buttons left">
-                            <a href="{% url 'ispdn:prikaz_form' ispdn_id=ispdn_id %}" class="button primary ui medium">Добавить новый</a>
-                            <a href="{% url 'ispdn:prikaz_form' ispdn_id=ispdn_id %}" class="button primary ui medium">Добавить существующий</a>
-                            <a href="/admin/Security/prikaz/" class="button primary ui medium">Список всех приказов</a>
+                            {% if ispdn %}
+                                <a href="{% iurl 'ispdn:prikaz_form' get_source='ispdn.id' %}" class="button primary ui medium">Добавить новый</a>
+                                <a href="{% url 'ispdn:prikazi_all' %}" class="button primary ui medium">Список всех приказов</a>
+                            {% else %}
+                                <a href="{% iurl 'ispdn:prikaz_form' %}" class="button primary ui medium">Добавить новый</a>
+                                {% for ispdn in ispdns %}
+                                    <a href="{% iurl 'ispdn:prikazi' ispdn_id='ispdn.id' %}" class="button primary ui medium">{{ ispdn.name }}</a>
+                                {% endfor %}
+                            {% endif %}
                         </div>
                     </div>
                     <div class="sixteen wide table-container">
@@ -30,9 +36,9 @@
                                 </tr>
                                 </thead>
                                 <tbody>
-                                {% for prikaz in prikazi %}
+                                {% for prikaz in instances %}
                                     <tr data-id="{{ prikaz.id }}">
-                                        <td data-label="#">{{ prikazi|length|substract:forloop.counter0 }}</td>
+                                        <td data-label="#">{{ instances|length|substract:forloop.counter0 }}</td>
                                         <td data-label="Номер">{{ prikaz.nomer }}</td>
                                         <td data-label="Название">{{ prikaz.name }}</td>
                                         <td data-label="Дата">{{ prikaz.date }}</td>
@@ -57,7 +63,11 @@
             });
             $('tbody tr').click(function () {
                 var id = $(this).attr('data-id')
-                window.location.href = '{% url 'ispdn:prikaz_form' ispdn_id=ispdn_id %}' + id + '/'
+                {% if ispdn %}
+                    window.location.href = '{% url 'ispdn:prikaz_form' %}' + id + '/?source={{ ispdn.id }}'
+                {% else %}
+                    window.location.href = '{% url 'ispdn:prikaz_form' %}' + id + '/'
+                {% endif %}
             })
             $('table').tablesort()
         })
