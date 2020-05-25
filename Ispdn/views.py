@@ -1,8 +1,10 @@
-from django.http import FileResponse
+from django.http import FileResponse, JsonResponse
 from django.shortcuts import render
 
 from utils.shortcuts import iredirect
 from .forms import *
+from .models import *
+from Pdn.models import Person
 
 
 def select_ispdn(request):
@@ -10,7 +12,13 @@ def select_ispdn(request):
 
 
 def ispdn(request, ispdn_id):
-    return render(request, 'Ispdn/Ispdn.html', {'ispdn': Ispdn.objects.get_or_404(id=ispdn_id)})
+    ispdn = Ispdn.objects.get_or_404(id=ispdn_id)
+    if request.is_ajax() and request.method == 'POST':
+        form = IspdnDateForm(request.POST, instance=ispdn)
+        if form.is_valid():
+            form.save()
+            return JsonResponse({'status': 'OK'})
+    return render(request, 'Ispdn/Ispdn.html', {'ispdn': ispdn})
 
 
 def prikazi(request, ispdn_id=None):
@@ -56,7 +64,7 @@ def polozhenie_download(request, id):
 
 
 def rukovodstva(request, ispdn_id=None):
-    return instance_list(request, ispdn_id, template='Ispdn/TableList/Rukovodstvo.html', model=Rukovodstvo, field_name='rukovodstvo')
+    return instance_list(request, ispdn_id, template='Ispdn/TableList/Rukovodstva.html', model=Rukovodstvo, field_name='rukovodstvo')
 
 
 def rukovodstvo_form(request, id=None):
@@ -83,6 +91,20 @@ def progob_download(request, id):
     return FileResponse(instance.file, filename=get_filename(instance))
 
 
+def raznoe(request, ispdn_id=None):
+    return instance_list(request, ispdn_id, template='Ispdn/TableList/Raznoe.html', model=Raznoe, field_name='raznoe')
+
+
+def raznoe_form(request, id=None):
+    return form(request, id, template='Ispdn/Forms/RaznoeForm.html', model=Raznoe, model_form=RaznoeForm,
+                reverse_name='raznoe', field_name='raznoe')
+
+
+def raznoe_download(request, id):
+    instance = Raznoe.objects.get_or_404(id=id)
+    return FileResponse(instance.file, filename=get_filename(instance))
+
+
 def get_filename(instance):
     return instance.file.name.split('/')[-1]
 
@@ -102,7 +124,7 @@ def instance_list(request, ispdn_id, template, model, field_name):
 
 def form(request, id, template, model, model_form, reverse_name, field_name):
     data = {'form': model_form(), 'persons': Person.objects.all(), 'source': request.GET.get('source'),
-            'ispdns': Ispdn.objects.all()}
+            'ispdns': Ispdn.objects.all(), 'source_ispdn': Ispdn.objects.get_or_none(id=request.GET.get('source'))}
     if data['source']:
         data['source'] = int(data['source'])
     instance = None

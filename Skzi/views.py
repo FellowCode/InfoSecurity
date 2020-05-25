@@ -6,14 +6,9 @@ from .forms import *
 from .models import *
 
 
-def otdel_ib(request):
-    otdel_id = request.GET.get('otdel')
-    return render(request, 'Security/Otdel_IB.html')
-
-
 def zhurnal(request):
     skzis = Skzi.objects.all()
-    return render(request, 'Security/Zhurnal.html', {'skzis': skzis})
+    return render(request, 'Skzi/Zhurnal.html', {'skzis': skzis})
 
 
 def zhurnal_form(request, id=None):
@@ -32,7 +27,7 @@ def zhurnal_form(request, id=None):
             form = SkziForm(request.POST)
         if form.is_valid():
             form.save()
-            return iredirect('security:zhurnal')
+            return iredirect('skzi:zhurnal')
         print(form.errors)
         data['form'] = form
-    return render(request, 'Security/ZhurnalForm.html', data)
+    return render(request, 'Skzi/ZhurnalForm.html', data)

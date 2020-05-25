@@ -1,4 +1,5 @@
 {% extends 'base.html' %}
+{% load static %}
 
 {% block title %}Запись СКЗИ | ПГУ им. "Шолом-Алейхема"{% endblock %}
 
@@ -7,9 +8,11 @@
         <div class="child-center">
             <div class="skzi-form cblock">
                 <div class="content">
+                    <div class="ui breadcrumb">
+                        <a href="{% url 'skzi:zhurnal' %}" class="section">Журнал</a>
+                    </div>
                     <div class="child-center">
                         <div class="form-container">
-                            <a href="{% url 'security:zhurnal' %}">Журнал</a>
                             <h2 class="ui center aligned header">Запись СКЗИ</h2>
                             <form class="ui form error" method="post">
                                 {% csrf_token %}
@@ -29,7 +32,8 @@
                                                 {% endfor %}
                                             </div>
                                         </div>
-                                        <a href="/admin/Security/skziname/" class="popup" data-dropdown-id="name_skzi">Управление
+                                        <a href="/admin/Skzi/skziname/add/" class="popup" data-dropdown-id="name_skzi">Добавить</a>
+                                        <a href="/admin/Skzi/skziname/" class="popup" data-dropdown-id="name_skzi">Управление
                                             списком</a>
                                     </div>
                                     <div class="field">
@@ -59,7 +63,9 @@
                                                 {% endfor %}
                                             </div>
                                         </div>
-                                        <a href="/admin/Security/organcrypto/" class="popup"
+                                        <a href="/admin/Skzi/organcrypto/add/" class="popup"
+                                           data-dropdown-id="from_organ_dropdown">Добавить</a>
+                                        <a href="/admin/Skzi/organcrypto/" class="popup"
                                            data-dropdown-id="from_organ_dropdown">Управление списком</a>
                                     </div>
                                     <div class="field">
@@ -70,6 +76,7 @@
                                                     <div class="ui input left icon">
                                                         <i class="calendar icon"></i>
                                                         <input type="text" name="date_poluch" placeholder="Дата"
+                                                               autocomplete="off"
                                                                value="{{ form.date_poluch.value|default_if_none:'' }}">
                                                     </div>
                                                 </div>
@@ -85,7 +92,8 @@
                                     <h3>Отметка о рассылке</h3>
                                     <div class="field">
                                         <label>Кому</label>
-                                        <div id="to_person_dropdown" class="ui selection dropdown" data-preselect="{{ form.to_person.value }}">
+                                        <div id="to_person_dropdown" class="ui selection dropdown"
+                                             data-preselect="{{ form.to_person.value }}">
                                             <input type="hidden" name="to_person">
                                             <i class="dropdown icon"></i>
                                             <div class="default text"></div>
@@ -96,7 +104,10 @@
                                                 {% endfor %}
                                             </div>
                                         </div>
-                                        <a href="/admin/Security/fiorassilki/" class="popup" data-dropdown-id="to_person_dropdown">Управление списком</a>
+                                        <a href="/admin/Skzi/fiorassilki/add/" class="popup"
+                                           data-dropdown-id="to_person_dropdown">Добавить</a>
+                                        <a href="/admin/Skzi/fiorassilki/" class="popup"
+                                           data-dropdown-id="to_person_dropdown">Управление списком</a>
                                     </div>
                                     <div class="field">
                                         <label>Дата и номер сопроводительного письма</label>
@@ -106,6 +117,7 @@
                                                     <div class="ui input left icon">
                                                         <i class="calendar icon"></i>
                                                         <input type="text" name="date_sopr" placeholder="Дата"
+                                                               autocomplete="off"
                                                                value="{{ form.date_sopr.value|default_if_none:'' }}">
                                                     </div>
                                                 </div>
@@ -124,6 +136,7 @@
                                                     <div class="ui input left icon">
                                                         <i class="calendar icon"></i>
                                                         <input type="text" name="date_podtv" placeholder="Дата"
+                                                               autocomplete="off"
                                                                value="{{ form.date_podtv.value|default_if_none:'' }}">
                                                     </div>
                                                 </div>
@@ -136,7 +149,8 @@
                                     </div>
                                     <div class="inline field">
                                         <div class="ui checkbox {% if form.podtv.value %}checked{% endif %}">
-                                            <input type="checkbox" tabindex="0" class="hidden" name="podtv" {% if form.podtv.value %}checked{% endif %}>
+                                            <input type="checkbox" tabindex="0" class="hidden" name="podtv"
+                                                   {% if form.podtv.value %}checked{% endif %}>
                                             <label>Расписка о получении</label>
                                         </div>
                                     </div>
@@ -151,6 +165,7 @@
                                                     <div class="ui input left icon">
                                                         <i class="calendar icon"></i>
                                                         <input type="text" name="vozvr_date_sopr" placeholder="Дата"
+                                                               autocomplete="off"
                                                                value="{{ form.vozvr_date_sopr.value|default_if_none:'' }}">
                                                     </div>
                                                 </div>
@@ -169,6 +184,7 @@
                                                     <div class="ui input left icon">
                                                         <i class="calendar icon"></i>
                                                         <input type="text" name="vozvr_date_podtv" placeholder="Дата"
+                                                               autocomplete="off"
                                                                value="{{ form.vozvr_date_podtv.value|default_if_none:'' }}">
                                                     </div>
                                                 </div>
@@ -187,6 +203,7 @@
                                             <div class="ui input left icon">
                                                 <i class="calendar icon"></i>
                                                 <input type="text" name="date_vvod" placeholder="Дата"
+                                                       autocomplete="off"
                                                        value="{{ form.date_vvod.value|default_if_none:'' }}">
                                             </div>
                                         </div>
@@ -197,6 +214,7 @@
                                             <div class="ui input left icon">
                                                 <i class="calendar icon"></i>
                                                 <input type="text" name="date_vivod" placeholder="Дата"
+                                                       autocomplete="off"
                                                        value="{{ form.date_vivod.value|default_if_none:'' }}">
                                             </div>
                                         </div>
@@ -211,6 +229,7 @@
                                                 <div class="ui input left icon">
                                                     <i class="calendar icon"></i>
                                                     <input type="text" name="date_unichtozh" placeholder="Дата"
+                                                           autocomplete="off"
                                                            value="{{ form.date_unichtozh.value|default_if_none:'' }}">
                                                 </div>
                                             </div>
@@ -223,7 +242,8 @@
                                     </div>
                                     <div class="inline field">
                                         <div class="ui checkbox {% if form.act_podtv.value %}checked{% endif %}">
-                                            <input type="checkbox" tabindex="0" class="hidden" name="act_podtv" {% if form.act_podtv.value %}checked{% endif %}>
+                                            <input type="checkbox" tabindex="0" class="hidden" name="act_podtv"
+                                                   {% if form.act_podtv.value %}checked{% endif %}>
                                             <label>Расписка об уничтожении</label>
                                         </div>
                                     </div>
@@ -258,6 +278,7 @@
     </div>
 {% endblock %}
 {% block script %}
+    <script type="text/javascript" src="{% static 'js/custom_calendar.js' %}"></script>
     <script type="text/javascript">
         $(document).ready(function () {
             $('button').click(function () {
@@ -290,32 +311,6 @@
                 $(this).dropdown('set selected', $(this).attr('data-preselect'))
             })
             $('.ui.checkbox').checkbox()
-            $('.ui.calendar').calendar({
-                type: 'date', text: {
-                    days: ['Вс', "Пн", "Вт", "Ср", "Чт", "Пт", "Сб"],
-                    months: ['Январь', 'Февраль', 'Март', 'Апрель', 'Май', 'Июнь', 'Июль', 'Август', 'Сентябрь', 'Октябрь', 'Ноябрь', 'Декабрь'],
-                    monthsShort: ['Янв', 'Фев', 'Мар', 'Апр', 'Май', 'Июнь', 'Июль', 'Авг', 'Сен', 'Окт', 'Ноя', 'Дек'],
-                    today: 'Сегодня',
-                    now: 'Сейчас',
-                    am: 'AM',
-                    pm: 'PM'
-                },
-                formatter: {
-                    date: function (date, settings) {
-                        if (!date) return '';
-                        var day = date.getDate() + '';
-                        if (day.length < 2) {
-                            day = '0' + day;
-                        }
-                        var month = (date.getMonth() + 1) + '';
-                        if (month.length < 2) {
-                            month = '0' + month;
-                        }
-                        var year = date.getFullYear();
-                        return day + '.' + month + '.' + year;
-                    }
-                }
-            })
             $('#add-skzi-name-form').submit(function (e) {
                 e.preventDefault()
 

@@ -1,5 +1,11 @@
 from django.forms import ModelForm
-from Security.models import *
+from .models import *
+
+
+class IspdnDateForm(ModelForm):
+    class Meta:
+        model = Ispdn
+        fields = ['start_date', 'end_date']
 
 
 class PrikazForm(ModelForm):
@@ -29,4 +35,10 @@ class PolozhenieForm(ModelForm):
 class ProgObForm(ModelForm):
     class Meta:
         model = ProgOb
+        exclude = ['id']
+
+
+class RaznoeForm(ModelForm):
+    class Meta:
+        model = Raznoe
         exclude = ['id']

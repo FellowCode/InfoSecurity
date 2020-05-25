@@ -26,8 +26,9 @@ urlpatterns = [
     path('admin/login/', admin_login),
     path('admin/', admin.site.urls),
     path('accounts/', include(('Accounts.urls', 'Accounts'), namespace='accounts')),
-    path('security/', include(('Security.urls', 'Security'), namespace='security')),
+    path('security/', include(('Skzi.urls', 'Skzi'), namespace='skzi')),
     path('ispdn/', include(('Ispdn.urls', 'Ispdn'), namespace='ispdn')),
+    path('other/', include(('Other.urls', 'Other'), namespace='other')),
     path('', include(('Main.urls', 'Main'), namespace='main')),
 ]
 

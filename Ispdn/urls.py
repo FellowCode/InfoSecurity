@@ -34,5 +34,11 @@ urlpatterns = [
     path('progob-form/<id>/', progob_form, name='progob_form_id'),
     path('<ispdn_id>/progob/', progob, name='progob'),
     path('progob-download/<id>/', progob_download, name='progob_download'),
+    # Разное
+    path('raznoe/', raznoe, name='raznoe_all'),
+    path('raznoe-form/', raznoe_form, name='raznoe_form'),
+    path('raznoe-form/<id>/', raznoe_form, name='raznoe_form_id'),
+    path('<ispdn_id>/raznoe/', raznoe, name='raznoe'),
+    path('raznoe-download/<id>/', raznoe_download, name='raznoe_download'),
     path('<ispdn_id>/', ispdn, name='menu'),
 ]

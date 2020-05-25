@@ -1,25 +1,61 @@
 {% extends 'base.html' %}
 {% load modified %}
+{% load static %}
 
-{% block title %}{{ otdel.name }} | ПГУ им. "Шолом-Алейхема"{% endblock %}
+{% block title %}{{ ispdn.name }} | ПГУ им. "Шолом-Алейхема"{% endblock %}
 
 {% block content %}
     <div class="ui container">
         <div class="child-center">
             <div class="ispdn cblock">
                 <div class="content">
-                    <h1 class="ui center aligned header">ИСПДн {{ ispdn.name }}</h1>
+                    <div class="ui breadcrumb">
+                        <a href="{% url 'ispdn:select' %}" class="section">Выбор ИСПДн</a>
+                    </div>
+                    <h1 class="ui center aligned header">{{ ispdn.name }}</h1>
+                    <div class="child-center">
+                        <form class="ui form">
+                            {% csrf_token %}
+                            <div class="three fields">
+                                <div class="field">
+                                    <label>Дата начала</label>
+                                    <div class="ui calendar">
+                                        <div class="ui input left icon">
+                                            <i class="calendar icon"></i>
+                                            <input type="text" name="start_date" placeholder="Дата" autocomplete="off"
+                                                   value="{{ ispdn.start_date|default_if_none:'' }}" readonly>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="field">
+
+                                </div>
+                                <div class="field">
+                                    <label>Дата окончания</label>
+                                    <div class="ui calendar">
+                                        <div class="ui input left icon">
+                                            <i class="calendar icon"></i>
+                                            <input type="text" name="end_date" placeholder="Дата" autocomplete="off"
+                                                   value="{{ ispdn.end_date|default_if_none:'' }}" readonly>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
                     <div class="child-center">
                         <a href="{% iurl 'ispdn:prikazi' ispdn_id='ispdn.id' %}" class="ui button primary massive">Приказы</a>
                         <a href="{% iurl 'ispdn:polozhenia' ispdn_id='ispdn.id' %}" class="ui button primary massive">Положения</a>
                     </div>
                     <div class="child-center">
                         <a href="{% iurl 'ispdn:instructs' ispdn_id='ispdn.id' %}" class="ui button primary massive">Инструкции</a>
-                        <a href="" class="ui button primary massive">Разное</a>
+                        <a href="{% iurl 'ispdn:raznoe' ispdn_id='ispdn.id' %}"
+                           class="ui button primary massive">Разное</a>
                     </div>
                     <div class="child-center">
                         <a href="{% iurl 'ispdn:rukovodstva' ispdn_id='ispdn.id' %}" class="ui button primary massive">Руководства</a>
-                        <a href="{% iurl 'ispdn:progob' ispdn_id='ispdn.id' %}" class="ui button primary massive">Прогр. обесп.</a>
+                        <a href="{% iurl 'ispdn:progob' ispdn_id='ispdn.id' %}" class="ui button primary massive">Прогр.
+                            обесп.</a>
                     </div>
                 </div>
             </div>
@@ -27,11 +63,20 @@
     </div>
 {% endblock %}
 {% block script %}
+    <script type="text/javascript" src="{% static 'js/custom_calendar.js' %}"></script>
     <script type="text/javascript">
         $(document).ready(function () {
             $('a').click(function () {
                 $(this).addClass('loading')
             });
+            calendar_settings['onChange'] = function (date, text, mode) {
+                setTimeout(send, 100)
+
+                function send() {
+                    $.post(window.location.href, $('form').serialize())
+                }
+            }
+            $('.ui.calendar').calendar(calendar_settings)
         })
     </script>
 {% endblock %}

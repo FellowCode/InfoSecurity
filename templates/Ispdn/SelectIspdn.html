@@ -7,12 +7,12 @@
     <div class="ui container">
         <div class="child-center">
             <div class="ispdn-select cblock">
-                <div class="content">
+                <div id="ispdn-list" class="content">
                     <h1 class="ui center aligned header">Выбор ИСПДн</h1>
                     {% for ispdn in ispdns %}
                         <a href="{% iurl 'ispdn:menu' ispdn_id='ispdn.id' %}" class="ui button primary massive">{{ ispdn.name }}</a>
                     {% endfor %}
-                    <a href="/admin/Security/ispdn/add/" class="ui button primary massive">Добавить</a>
+                    <a href="/admin/Ispdn/ispdn/add/" class="ui button primary massive popup-window" data-block-id="ispdn-list">Добавить</a>
                 </div>
             </div>
         </div>
@@ -21,9 +21,30 @@
 {% block script %}
     <script type="text/javascript">
         $(document).ready(function () {
-            $('a').click(function () {
+            $('a:not(.popup-window)').click(function () {
                 $(this).addClass('loading')
             });
+            $('a.popup-window').click(function () {
+                var popup = window.open($(this).attr('href'), 'popup', 'width=800,height=600')
+                var block_id = $(this).attr('data-block-id')
+                var $block = $('#' + block_id)
+
+
+                var popupTick = setInterval(function () {
+                    if (popup.closed) {
+                        clearInterval(popupTick)
+                        UpdateBlock($block, block_id)
+                    }
+                }, 300)
+
+                return false
+            })
+            function UpdateBlock($block, block_id) {
+                $.get(window.location.href, function (data) {
+                    $block.replaceWith($(data).find(`#${block_id}`))
+                    $('#' + block_id).dropdown()
+                })
+            }
         })
     </script>
 {% endblock %}

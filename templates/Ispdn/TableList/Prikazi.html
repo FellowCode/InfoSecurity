@@ -8,7 +8,16 @@
         <div class="child-center">
             <div class="skzi-list cblock">
                 <div class="content">
-                    <h1 class="ui center aligned header">Приказы {% if ispdn %}{{ ispdn.name }}{% endif %}</h1>
+                    <div class="ui breadcrumb">
+                      <a href="{% url 'ispdn:select' %}" class="section">Выбор ИСПДн</a>
+                      <div class="divider"> / </div>
+                        {% if ispdn %}
+                          <a href="{% iurl 'ispdn:menu' ispdn_id='ispdn.id' %}" class="section">{{ ispdn.name }}</a>
+                          <div class="divider"> / </div>
+                        {% endif %}
+                      <div class="active section">Приказы</div>
+                    </div>
+                    <h1 class="ui center aligned header">Приказы</h1>
                     <div class="panel">
                         <div class="buttons left">
                             {% if ispdn %}

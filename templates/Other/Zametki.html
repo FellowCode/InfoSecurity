@@ -1,0 +1,83 @@
+{% extends 'base.html' %}
+{% load modified %}
+{% load static %}
+
+{% block title %}Разное {{ ispdn.name }} | ПГУ им. "Шолом-Алейхема"{% endblock %}
+
+{% block content %}
+    <div class="ui container">
+        <div class="child-center">
+            <div class="zametki cblock">
+                <div class="content">
+                    <h1 class="ui center aligned header">Заметки</h1>
+                    <a id="add-zametka" class="ui primary button medium">Добавить</a>
+                    <div id="cards-container" class="ui three cards">
+                        {% for zametka in zametki %}
+                            <div class="card">
+                                <div class="content">
+                                    <i data-id="{{ zametka.id }}" class="delete-btn right floated close icon"></i>
+                                    <div class="header">{{ zametka.name }}</div>
+                                    <div class="meta">{{ zametka.date }}</div>
+                                    <div class="description">{{ zametka.content }}</div>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="ui modal tiny">
+        <div class="header">Новая заметка</div>
+        <div class="content no-shadow">
+            <form class="ui form">
+                {% csrf_token %}
+                <div class="field">
+                    <label>Название</label>
+                    <input class="clearable" type="text" name="name" placeholder="">
+                </div>
+                <div class="field">
+                    <label>Содержание</label>
+                    <textarea class="clearable" name="content" rows="4"></textarea>
+                </div>
+            </form>
+        </div>
+        <div class="actions">
+            <div id="save-btn" class="ui button primary">Сохранить</div>
+            <div class="ui cancel button">Отмена</div>
+        </div>
+    </div>
+{% endblock %}
+{% block script %}
+    <script type="text/javascript" src="{% static 'js/custom_calendar.js' %}"></script>
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $('#add-zametka').click(function () {
+                $('.ui.modal').modal('show')
+                $('#save-btn').removeClass('loading')
+            })
+            $('#save-btn').click(function () {
+                $(this).addClass('loading')
+                $.post(window.location.href, $('.ui.modal form').serialize(), function (data) {
+                    $('#cards-container').replaceWith($(data).find('#cards-container'))
+                    $(this).removeClass('loading')
+                    $('.ui.modal').modal('hide').find('.clearable').val('')
+                    setupDeleteBtns()
+                })
+            })
+            var csrf = $('.ui.modal input[name=csrfmiddlewaretoken]').val()
+            setupDeleteBtns()
+            function setupDeleteBtns() {
+
+                $('.delete-btn').click(function () {
+                    $.post('{% url 'other:delete_zametka' %}', {'id': $(this).attr('data-id'), 'csrfmiddlewaretoken': csrf}, function (data) {
+                        $('#cards-container').replaceWith($(data).find('#cards-container'))
+                        setupDeleteBtns()
+                    })
+                })
+            }
+
+
+        })
+    </script>
+{% endblock %}

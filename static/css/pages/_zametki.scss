@@ -1,0 +1,23 @@
+.zametki{
+  width: 100%;
+  max-width: 1000px;
+
+  #cards-container{
+    float: left;
+    width: 100%;
+    position: relative;
+  }
+
+  .ui.cards{
+    margin-top: 30px;
+
+    .card i{
+      transition: .2s;
+      cursor: pointer;
+
+      &:hover, &:active{
+        color: #cb2727;
+      }
+    }
+  }
+}

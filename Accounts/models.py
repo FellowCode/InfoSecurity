@@ -23,8 +23,6 @@ class User(AbstractBaseUser, PermissionsMixin):
 
     gr_key = models.CharField(max_length=16, default=None, null=True, blank=True, verbose_name='Графический ключ')
 
-    otdel = models.ForeignKey('Security.OtdelIR', on_delete=models.SET_NULL, related_name='users', null=True, default=None, verbose_name='Отдел')
-
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = []
 

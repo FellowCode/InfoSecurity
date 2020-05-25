@@ -31,12 +31,12 @@
                         </div>
                     {% else %}
                         <div class="child-center">
-                            <a href="{% url 'security:zhurnal' %}" class="ui primary button massive razdel">СКЗИ</a>
+                            <a href="{% url 'skzi:zhurnal' %}" class="ui primary button massive razdel">СКЗИ</a>
                             <a href="" class="ui primary button massive razdel">ПДн</a>
                         </div>
                         <div class="child-center">
                             <a href="{% url 'ispdn:select' %}" class="ui primary button massive razdel">ИСПДн</a>
-                            <a href="" class="ui primary button massive razdel">Прочее</a>
+                            <a href="{% url 'other:zametki' %}" class="ui primary button massive razdel">Заметки</a>
                         </div>
                     {% endif %}
                 </div>

@@ -72,19 +72,3 @@
     }
   }
 }
-
-.ui.modal {
-  label.ui.button.primary {
-    position: absolute;
-    right: 20px;
-    top: 1px;
-  }
-
-  input[type=text] {
-    width: calc(100% - 150px);
-  }
-
-  input[type=file] {
-    display: none;
-  }
-}

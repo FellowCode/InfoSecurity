@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+{% load modified %}
+{% load static %}
+
+{% block title %}Разное {{ ispdn.name }} | ПГУ им. "Шолом-Алейхема"{% endblock %}
+
+{% block content %}
+    <div class="ui container">
+        <div class="child-center">
+            <div class="raznoe cblock">
+                <div class="content">
+                    <div class="ui breadcrumb">
+                        <a href="{% url 'ispdn:select' %}" class="section">Выбор ИСПДн</a>
+                        <div class="divider"> /</div>
+                        {% if ispdn %}
+                            <a href="{% iurl 'ispdn:menu' ispdn_id='ispdn.id' %}" class="section">{{ ispdn.name }}</a>
+                            <div class="divider"> /</div>
+                        {% endif %}
+                        <div class="active section">Разное</div>
+                    </div>
+                    <h1 class="ui center aligned header">Разное</h1>
+                    <div class="items">
+                        {% for instance in instances %}
+                            <a href="{% iurl 'ispdn:raznoe_download' id='instance.id' %}" class="instance">{{ forloop.counter }}. {{ instance.name }}</a>
+                        {% endfor %}
+                    </div>
+                    <div class="child-center">
+                        <a href="{% iurl 'ispdn:raznoe_form' get_source='ispdn.id' %}" class="ui button primary large" style="width: 300px">Добавить</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+{% block script %}
+    <script type="text/javascript" src="{% static 'js/custom_calendar.js' %}"></script>
+    <script type="text/javascript">
+        $(document).ready(function () {
+        })
+    </script>
+{% endblock %}

@@ -2,23 +2,9 @@ from django.contrib import admin
 
 from .models import *
 
-
-
-
-@admin.register(SkziName)
-class SkziNameAdmin(admin.ModelAdmin):
-    pass
-
-
-@admin.register(Person)
-class PersonAdmin(admin.ModelAdmin):
-    pass
-
-
-@admin.register(FioRassilki)
-class FioRassilkiAdmin(admin.ModelAdmin):
-    pass
-
+@admin.register(Ispdn)
+class IspdnAdmin(admin.ModelAdmin):
+    fields = ['nomer', 'name']
 
 @admin.register(Prikaz)
 class PrikazAdmin(admin.ModelAdmin):
@@ -45,16 +31,6 @@ class ProgObAdmin(admin.ModelAdmin):
     list_display = ['nomer', 'name']
 
 
-@admin.register(OrganCrypto)
-class OrganCrypto(admin.ModelAdmin):
-    list_display = ['company', 'region']
-
-
-@admin.register(Skzi)
-class Skzi(admin.ModelAdmin):
-    pass
-
-
-@admin.register(Ispdn)
-class IspdnAdmin(admin.ModelAdmin):
+@admin.register(Raznoe)
+class RaznoeAdmin(admin.ModelAdmin):
     pass

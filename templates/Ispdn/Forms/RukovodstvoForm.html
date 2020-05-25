@@ -7,13 +7,19 @@
         <div class="child-center">
             <div class="skzi-form cblock">
                 <div class="content">
+                    <div class="ui breadcrumb">
+                        <a href="{% url 'ispdn:select' %}" class="section">Выбор ИСПДн</a>
+                        <div class="divider"> /</div>
+                        {% if source %}
+                            <a href="{% url 'ispdn:menu' ispdn_id=source %}" class="section">{{ source_ispdn.name }}</a>
+                            <div class="divider"> /</div>
+                            <a href="{% url 'ispdn:rukovodstva' ispdn_id=source %}" class="section">Руководства</a>
+                        {% else %}
+                            <a href="{% url 'ispdn:rukovodstva_all' %}" class="section">Руководства</a>
+                        {% endif %}
+                    </div>
                     <div class="child-center">
                         <div class="form-container">
-                            {% if source %}
-                                <a href="{% url 'ispdn:rukovodstvo' ispdn_id=source %}">Роководства</a>
-                            {% else %}
-                                <a href="{% url 'ispdn:rukovodstvo_all' %}">Роководства</a>
-                            {% endif %}
                             <h2 class="ui center aligned header">Роководство</h2>
                             <form class="ui form error" method="post" enctype="multipart/form-data">
                                 {% csrf_token %}
@@ -21,7 +27,9 @@
                                     {% for ispdn in ispdns %}
                                         <div class="six wide inline field">
                                             <div class="ui checkbox {% if ispdn.id in instance_ispdns %} checked {% endif %}">
-                                                <input type="checkbox" tabindex="0" class="hidden" name="ispdn" value="{{ ispdn.id }}"  {% if ispdn.id in instance_ispdns %} checked {% endif %}>
+                                                <input type="checkbox" tabindex="0" class="hidden" name="ispdn"
+                                                       value="{{ ispdn.id }}"  {% if ispdn.id in instance_ispdns %}
+                                                       checked {% endif %}>
                                                 <label>{{ ispdn.name }}</label>
                                             </div>
                                         </div>
@@ -30,7 +38,9 @@
                                     {% for ispdn in ispdns %}
                                         <div class="six wide inline field">
                                             <div class="ui checkbox {% if source == ispdn.id %} checked {% endif %}">
-                                                <input type="checkbox" tabindex="0" class="hidden" name="ispdn" value="{{ ispdn.id }}"  {% if source == ispdn.id %} checked {% endif %}>
+                                                <input type="checkbox" tabindex="0" class="hidden" name="ispdn"
+                                                       value="{{ ispdn.id }}"  {% if source == ispdn.id %}
+                                                       checked {% endif %}>
                                                 <label>{{ ispdn.name }}</label>
                                             </div>
                                         </div>
@@ -112,32 +122,6 @@
                 $(this).dropdown('set selected', $(this).attr('data-preselect'))
             })
             $('.ui.checkbox').checkbox()
-            $('.ui.calendar').calendar({
-                type: 'date', text: {
-                    days: ['Вс', "Пн", "Вт", "Ср", "Чт", "Пт", "Сб"],
-                    months: ['Январь', 'Февраль', 'Март', 'Апрель', 'Май', 'Июнь', 'Июль', 'Август', 'Сентябрь', 'Октябрь', 'Ноябрь', 'Декабрь'],
-                    monthsShort: ['Янв', 'Фев', 'Мар', 'Апр', 'Май', 'Июнь', 'Июль', 'Авг', 'Сен', 'Окт', 'Ноя', 'Дек'],
-                    today: 'Сегодня',
-                    now: 'Сейчас',
-                    am: 'AM',
-                    pm: 'PM'
-                },
-                formatter: {
-                    date: function (date, settings) {
-                        if (!date) return '';
-                        var day = date.getDate() + '';
-                        if (day.length < 2) {
-                            day = '0' + day;
-                        }
-                        var month = (date.getMonth() + 1) + '';
-                        if (month.length < 2) {
-                            month = '0' + month;
-                        }
-                        var year = date.getFullYear();
-                        return day + '.' + month + '.' + year;
-                    }
-                }
-            })
         })
     </script>
 {% endblock %}

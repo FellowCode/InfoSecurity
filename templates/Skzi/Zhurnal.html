@@ -12,7 +12,7 @@
                     <h1 class="ui center aligned header">Журнал СКЗИ</h1>
                     <div class="panel">
                         <div class="buttons left">
-                            <a href="{% url 'security:zhurnal_form' %}" class="button primary ui large">Добавить</a>
+                            <a href="{% url 'skzi:zhurnal_form' %}" class="button primary ui large">Добавить</a>
                         </div>
                     </div>
                     <div class="sixteen wide table-container">
@@ -113,7 +113,7 @@
             var $items = $('table tbody tr');
             $items.click(function () {
                 var id = $(this).attr('data-id')
-                window.location.href = '{% url 'security:zhurnal_form' %}' + id + '/'
+                window.location.href = '{% url 'skzi:zhurnal_form' %}' + id + '/'
             })
             var $list = $('table tbody');
             $('#search-btn').click(function () {
