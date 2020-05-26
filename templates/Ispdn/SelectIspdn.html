@@ -40,10 +40,7 @@
                 return false
             })
             function UpdateBlock($block, block_id) {
-                $.get(window.location.href, function (data) {
-                    $block.replaceWith($(data).find(`#${block_id}`))
-                    $('#' + block_id).dropdown()
-                })
+                window.location.reload()
             }
         })
     </script>

@@ -53,7 +53,7 @@
     <script type="text/javascript">
         $(document).ready(function () {
             $('#add-zametka').click(function () {
-                $('.ui.modal').modal('show')
+                $('.ui.modal').modal('setting', 'closable', false).modal('show')
                 $('#save-btn').removeClass('loading')
             })
             $('#save-btn').click(function () {

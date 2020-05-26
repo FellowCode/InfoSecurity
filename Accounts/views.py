@@ -24,7 +24,7 @@ def login(request):
         if form.is_valid():
             auth.login(request, form.cleaned_data['user'])
             p = urllib.parse.urlencode(request.GET)
-            return redirect(reverse('accounts:graphic_key') + '?' + p)
+            return redirect(reverse('main:index'))
         return render(request, 'Accounts/Login.html', {'form': form})
     form = LoginForm()
     return render(request, 'Accounts/Login.html', {'form': form})
@@ -36,6 +36,7 @@ def graphic_key(request):
     status = request.GET.get('status')
     if request.method == 'POST':
         gr_key = request.POST.get('gr_key')
+        print(status)
         if status == 'new':
             request.session['graphic_key'] = gr_key
             return iredirect('accounts:graphic_key', get={'status': 'confirm'})

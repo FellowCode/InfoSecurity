@@ -76,7 +76,7 @@
                                 <tbody>
                                 {% for skzi in skzis %}
                                     <tr data-id="{{ skzi.id }}">
-                                        <td>{{ skzis|length|substract:forloop.counter0 }}</td>
+                                        <td>{{ forloop.counter }}</td>
                                         <td>{{ skzi.name.type }}</td>
                                         <td>{{ skzi.serial_n }}</td>
                                         <td>{{ skzi.ekz_n }}</td>

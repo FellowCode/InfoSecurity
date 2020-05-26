@@ -16,3 +16,4 @@ class Zametka(models.Model):
     class Meta:
         verbose_name = 'Заметка'
         verbose_name_plural = 'Заметки'
+        ordering = ['-id']

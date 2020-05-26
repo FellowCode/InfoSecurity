@@ -75,6 +75,7 @@ class Instruct(models.Model):
     class Meta:
         verbose_name = 'Инструкция'
         verbose_name_plural = "Инструкции"
+        ordering = ['-id']
 
 
 class Rukovodstvo(models.Model):
@@ -92,6 +93,7 @@ class Rukovodstvo(models.Model):
     class Meta:
         verbose_name = 'Руководство'
         verbose_name_plural = "Руководства"
+        ordering = ['-id']
 
 
 class Polozhenie(models.Model):
@@ -110,6 +112,7 @@ class Polozhenie(models.Model):
     class Meta:
         verbose_name = 'Положение'
         verbose_name_plural = "Положения"
+        ordering = ['-id']
 
 
 class ProgOb(models.Model):
@@ -127,6 +130,7 @@ class ProgOb(models.Model):
     class Meta:
         verbose_name = 'ПО'
         verbose_name_plural = "ПО"
+        ordering = ['-id']
 
 
 class Raznoe(models.Model):
@@ -143,3 +147,4 @@ class Raznoe(models.Model):
     class Meta:
         verbose_name = 'Разное'
         verbose_name_plural = "Разное"
+        ordering = ['-id']

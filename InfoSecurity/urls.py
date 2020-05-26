@@ -28,6 +28,7 @@ urlpatterns = [
     path('accounts/', include(('Accounts.urls', 'Accounts'), namespace='accounts')),
     path('security/', include(('Skzi.urls', 'Skzi'), namespace='skzi')),
     path('ispdn/', include(('Ispdn.urls', 'Ispdn'), namespace='ispdn')),
+    path('other/', include(('Pdn.urls', 'Pdn'), namespace='pdn')),
     path('other/', include(('Other.urls', 'Other'), namespace='other')),
     path('', include(('Main.urls', 'Main'), namespace='main')),
 ]

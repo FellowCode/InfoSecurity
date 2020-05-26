@@ -29,15 +29,17 @@
                                 </a>
                             </div>
                         </div>
-                    {% else %}
+                    {% elif user.is_superuser %}
                         <div class="child-center">
                             <a href="{% url 'skzi:zhurnal' %}" class="ui primary button massive razdel">СКЗИ</a>
-                            <a href="" class="ui primary button massive razdel">ПДн</a>
+                            <a href="{% url 'pdn:persons_list' %}" class="ui primary button massive razdel">ПДн</a>
                         </div>
                         <div class="child-center">
                             <a href="{% url 'ispdn:select' %}" class="ui primary button massive razdel">ИСПДн</a>
                             <a href="{% url 'other:zametki' %}" class="ui primary button massive razdel">Заметки</a>
                         </div>
+                    {% else %}
+                        <h3>У вас нет прав для работы в данном сервисе</h3>
                     {% endif %}
                 </div>
             </div>
