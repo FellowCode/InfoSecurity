@@ -25,19 +25,19 @@ class Skzi(models.Model):
 
     #Отметка о возврате
     vozvr_date_sopr = models.DateField(null=True, blank=True)
-    vozvr_nomer_sopr = models.CharField(max_length=32, blank=True)
+    vozvr_nomer_sopr = models.CharField(max_length=32, null=True, blank=True)
     vozvr_date_podtv = models.DateField(null=True, blank=True)
-    vozvr_nomer_podtv = models.CharField(max_length=32, blank=True)
+    vozvr_nomer_podtv = models.CharField(max_length=32, null=True, blank=True)
 
     date_vvod = models.DateField(null=True, blank=True)
     date_vivod = models.DateField(null=True, blank=True)
 
     #Отметка о уничтожении
     date_unichtozh = models.DateField(null=True, blank=True)
-    nomer_acta = models.CharField(max_length=32, blank=True)
+    nomer_acta = models.CharField(max_length=32, null=True, blank=True)
     act_podtv = models.BooleanField(default=False)
 
-    primechanie = models.CharField(max_length=1024, blank=True)
+    primechanie = models.CharField(max_length=1024, null=True, blank=True)
 
     def __str__(self):
         return self.name.type

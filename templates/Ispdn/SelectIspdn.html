@@ -1,5 +1,6 @@
 {% extends 'base.html' %}
 {% load modified %}
+{% load ispdn_extra %}
 
 {% block title %}Выбор ИСПДн | ПГУ им. "Шолом-Алейхема"{% endblock %}
 
@@ -10,9 +11,21 @@
                 <div id="ispdn-list" class="content">
                     <h1 class="ui center aligned header">Выбор ИСПДн</h1>
                     {% for ispdn in ispdns %}
-                        <a href="{% iurl 'ispdn:menu' ispdn_id='ispdn.id' %}" class="ui button primary massive">{{ ispdn.name }}</a>
+                        <a href="{% iurl 'ispdn:menu' ispdn_id='ispdn.id' %}"
+                           class="ui button primary massive">{{ ispdn.name }}</a>
                     {% endfor %}
-                    <a href="/admin/Ispdn/ispdn/add/" class="ui button primary massive popup-window" data-block-id="ispdn-list">Добавить</a>
+                    <a href="/admin/Ispdn/ispdn/add/" class="ui button primary massive popup-window"
+                       data-block-id="ispdn-list">Добавить</a>
+                    <div class="ui form error">
+                        <div class="ui error message">
+                            <div class="header">Срок ИСПДн истекает</div>
+                            <ul class="list">
+                                {% for ispdn, td in date_warnings %}
+                                    <li>Срок <strong>{{ ispdn.name }}</strong> истекает через <strong>{{ td|get_days }}</strong> дней</li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -39,6 +52,7 @@
 
                 return false
             })
+
             function UpdateBlock($block, block_id) {
                 window.location.reload()
             }

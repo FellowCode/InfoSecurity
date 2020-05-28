@@ -1,3 +1,5 @@
+from datetime import datetime, timedelta
+
 from django.http import FileResponse, JsonResponse
 from django.shortcuts import render
 
@@ -8,7 +10,13 @@ from Pdn.models import Person
 
 
 def select_ispdn(request):
-    return render(request, 'Ispdn/SelectIspdn.html', {'ispdns': Ispdn.objects.all()})
+    date_warnings = []
+    ispdns = Ispdn.objects.all()
+    for ispdn in ispdns:
+        td = ispdn.end_date - datetime.date(datetime.now())
+        if td < timedelta(days=90):
+            date_warnings.append((ispdn, td))
+    return render(request, 'Ispdn/SelectIspdn.html', {'ispdns': ispdns, 'date_warnings': date_warnings})
 
 
 def ispdn(request, ispdn_id):
