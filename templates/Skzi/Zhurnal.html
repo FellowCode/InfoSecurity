@@ -9,13 +9,27 @@
         <div class="child-center">
             <div class="skzi-list cblock">
                 <div class="content">
+                    {% csrf_token %}
                     <h1 class="ui center aligned header">Журнал СКЗИ</h1>
                     <div class="panel">
                         <div class="buttons left">
-                            <a href="{% url 'skzi:zhurnal_form' %}" class="button primary ui large">Добавить</a>
+                            <a href="{% url 'skzi:zhurnal_form' %}" class="button primary ui">Добавить</a>
+                            <a id="download-word" class="button primary ui">Скачать Word</a>
+                            <a id="archive" class="ui button primary">Добавление в архив</a>
+                            <a id="cancel" class="ui button primary hide">Отмена</a>
+                        </div>
+                        <div class="ui fluid search selection dropdown" data-preselect="{{ fio_cur }}">
+                            <input type="hidden" name="fiorassilki">
+                            <i class="dropdown icon"></i>
+                            <div class="default text">Кому разослан</div>
+                            <div class="menu">
+                                {% for fio_rassilki in fio_rassilki_list %}
+                                    <div class="item" data-value="{{ fio_rassilki.id }}">{{ fio_rassilki }}</div>
+                                {% endfor %}
+                            </div>
                         </div>
                     </div>
-                    <div class="sixteen wide table-container">
+                    <div id="table-container" class="sixteen wide table-container">
                         <div class="table-width">
                             <table class="ui celled selectable table tableFixHead">
                                 <thead>
@@ -84,14 +98,17 @@
                                         <td>{{ skzi.date_poluch }}, {{ skzi.nomer_poluch }}</td>
                                         <td>{{ skzi.to_person.get_fio }}</td>
                                         <td>{{ skzi.date_sopr }}, {{ skzi.nomer_sopr }}</td>
-                                        <td>{{ skzi.date_podtv }}, {{ skzi.nomer_podtv }}</td>
-                                        <td>{{ skzi.vozvr_date_sopr }}, {{ skzi.vozvr_nomer_sopr }}</td>
-                                        <td>{{ skzi.vozvr_date_podtv }}, {{ skzi.vozvr_nomer_podtv }}</td>
-                                        <td>{{ skzi.date_vvod }}</td>
-                                        <td>{{ skzi.date_vivod }}</td>
-                                        <td>{{ skzi.date_unichtozh }}</td>
-                                        <td>{{ skzi.nomer_acta }}</td>
-                                        <td>{{ skzi.primechanie }}</td>
+                                        <td>{% if skzi.date_podtv %}{{ skzi.date_podtv }},
+                                            {{ skzi.nomer_podtv }}{% endif %}</td>
+                                        <td>{% if skzi.vozvr_date_sopr %}{{ skzi.vozvr_date_sopr }},
+                                            {{ skzi.vozvr_nomer_sopr }}{% endif %}</td>
+                                        <td>{% if skzi.vozvr_date_podtv %}{{ skzi.vozvr_date_podtv }},
+                                            {{ skzi.vozvr_nomer_podtv }}{% endif %}</td>
+                                        <td>{{ skzi.date_vvod|default_if_none:'' }}</td>
+                                        <td>{{ skzi.date_vivod|default_if_none:'' }}</td>
+                                        <td>{{ skzi.date_unichtozh|default_if_none:'' }}</td>
+                                        <td>{{ skzi.nomer_acta|default_if_none:'' }}</td>
+                                        <td>{{ skzi.primechanie|default_if_none:'' }}</td>
                                     </tr>
                                 {% endfor %}
                                 </tbody>
@@ -110,24 +127,64 @@
 
         $(document).ready(function () {
             $('table').tablesort()
-            var $items = $('table tbody tr');
-            $items.click(function () {
-                var id = $(this).attr('data-id')
-                window.location.href = '{% url 'skzi:zhurnal_form' %}' + id + '/'
+            var $items
+            setupTrClick()
+            function setupTrClick() {
+                $items = $('table tbody tr');
+                $items.click(function () {
+                    var id = $(this).attr('data-id')
+                    if (archive) {
+                        $(this).toggleClass('active')
+                    } else {
+                        window.location.href = '{% url 'skzi:zhurnal_form' %}' + id + '/'
+                    }
+                })
+            }
+            var token = $('input[name=csrfmiddlewaretoken]').val()
+            $('.ui.selection.dropdown').dropdown({
+                clearable: true,
+                onChange: function (value, text, $choice) {
+                    var url = '{% url 'skzi:zhurnal' %}' + '?fiorassilki=' + value
+                    $.get(url, function (data) {
+                        $('#table-container').replaceWith($(data).find('#table-container'))
+                        window.history.replaceState(null, null, url)
+                        setupTrClick()
+                    })
+                }
             })
-            var $list = $('table tbody');
-            $('#search-btn').click(function () {
-                var query = $('input[name=search]').val().split(' ');
-                var $search_items = $items.filter(function () {
-                    var result = true;
-                    var disc = $(this).find('[data-label=Дисциплина]').text().toLowerCase();
-                    query.forEach(function (val, i, a) {
-                        result = disc.includes(val.toLowerCase());
-                    });
-                    return result
-                });
-                $list.html("");
-                $list.append($search_items);
+            $('.ui.selection.dropdown').each(function (i) {
+                $(this).dropdown('set selected', $(this).attr('data-preselect'))
+            })
+            $('#download-word').click(function () {
+                var url = window.location.href
+                if (!url.includes('?'))
+                    url += '?'
+                url += '&action=download'
+                window.location.href = url
+            })
+            var archive = false
+            $('#archive').click(function () {
+                archive = !archive
+                if (archive) {
+                    $('#cancel').removeClass('hide')
+                    $(this).text('Выделенное в архив')
+                } else {
+                    $(this).text('Добавление в архив')
+                    $('#cancel').addClass('hide')
+                    var ids = $.map($('tr.active'), function (item) {
+                        return $(item).attr('data-id')
+                    })
+                    $.post(window.location.href, {'csrfmiddlewaretoken': token, 'id': ids.join(',')}, function (data) {
+                        $('#table-container').replaceWith($(data).find('#table-container'))
+                        setupTrClick()
+                    })
+                }
+            })
+            $('#cancel').click(function () {
+                $(this).addClass('hide')
+                $('#archive').text('Добавление в архив')
+                archive = false
+                $items.removeClass('active')
             })
 
         })

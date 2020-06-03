@@ -15,8 +15,32 @@
                             <a href="{% iurl 'pdn:person_form' %}"
                                class="button primary ui medium">Добавить нового</a>
                         </div>
+                        <form id="filter-form">
+                            <div class="ui fluid search selection dropdown">
+                                <input type="hidden" name="fakultet">
+                                <i class="dropdown icon"></i>
+                                <div class="default text">Факультет</div>
+                                <div class="menu">
+                                    {% for fakultet in fakultets %}
+                                        <div class="item" data-value="{{ fakultet.id }}">{{ fakultet }}</div>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                            <div class="ui fluid search selection dropdown">
+                                <input type="hidden" name="podrazd">
+                                <i class="dropdown icon"></i>
+                                <div class="default text">Подразделение</div>
+                                <div class="menu">
+                                    {% for podrazd in podrazds %}
+                                        <div class="item" data-value="{{ podrazd.id }}">{{ podrazd }}</div>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                        </form>
                     </div>
-                    <div class="sixteen wide table-container">
+                    <div id="table-container" class="sixteen wide table-container">
+                        <h4>Согласие на обработку: {{ sogl_obr }} из {{ instances.count }}</h4>
+                        <h4>Согласие на распространение: {{ sogl_raspr }} из {{ instances.count }}</h4>
                         <div class="table-width">
                             <table class="ui celled selectable sortable table tableFixHead">
                                 <thead>
@@ -24,7 +48,8 @@
                                     <th>#</th>
                                     <th>ФИО</th>
                                     <th>Дата рождения</th>
-                                    <th>Факультет, подразделение</th>
+                                    <th>Факультет</th>
+                                    <th>Подразделение</th>
                                     <th>Согласие на обработку персональных данных</th>
                                     <th>Согласие на распространение персональных данных</th>
                                 </tr>
@@ -35,15 +60,20 @@
                                     <td data-label="#">{{ instances|length|substract:forloop.counter0 }}</td>
                                     <td data-label="ФИО">{{ instance.get_fio }}</td>
                                     <td data-label="Дата рождения">{{ instance.birth_date }}</td>
-                                    <td data-label="Факультет, подразделение">{{ instance.fakultet|default_if_none:'' }} {{ instance.podrazd|default_if_none:'' }}</td>
-                                    <td style="white-space: normal" data-label="Согласие на обработку персональных данных">
+                                    <td data-label="Факультет">{{ instance.fakultet|default_if_none:'' }}</td>
+                                    <td data-label="Подразделение">{{ instance.podrazd|default_if_none:'' }}</td>
+                                    <td style="white-space: normal"
+                                        data-label="Согласие на обработку персональных данных">
                                         <div class="ui {% if instance.soglasie %} checked {% endif %} checkbox">
-                                            <input type="checkbox" {% if instance.soglasie %} checked {% endif %} class="hidden" readonly="" tabindex="0"/>
+                                            <input type="checkbox" {% if instance.soglasie %} checked {% endif %}
+                                                   class="hidden" readonly="" tabindex="0"/>
                                         </div>
                                     </td>
-                                    <td style="white-space: normal" data-label="Согласие на распространение персональных данных">
+                                    <td style="white-space: normal"
+                                        data-label="Согласие на распространение персональных данных">
                                         <div class="ui {% if instance.sogl_raspr %} checked {% endif %} checkbox">
-                                            <input type="checkbox" {% if instance.sogl_raspr %} checked {% endif %} class="hidden" readonly="" tabindex="0"/>
+                                            <input type="checkbox" {% if instance.sogl_raspr %} checked {% endif %}
+                                                   class="hidden" readonly="" tabindex="0"/>
                                         </div>
                                     </td>
                                 {% endfor %}
@@ -63,12 +93,26 @@
             $('.button:not(.download)').click(function () {
                 $(this).addClass('loading')
             });
-            $('tbody tr').click(function () {
-                var id = $(this).attr('data-id')
-                window.location.href = '{% url 'pdn:person_form' %}' + id + '/'
+            setupList()
+
+            function setupList() {
+                $('tbody tr').click(function () {
+                    var id = $(this).attr('data-id')
+                    window.location.href = '{% url 'pdn:person_form' %}' + id + '/'
+                })
+                $('.ui.checkbox').checkbox()
+                $('table').tablesort()
+            }
+
+
+            $('.selection.dropdown').dropdown({
+                clearable: true, onChange: function (value, text, $choice) {
+                    $.get(window.location.href, $('#filter-form').serialize(), function (data) {
+                        $('#table-container').replaceWith($(data).find('#table-container'))
+                        setupList()
+                    })
+                }
             })
-            $('.ui.checkbox').checkbox()
-            $('table').tablesort()
         })
     </script>
 {% endblock %}

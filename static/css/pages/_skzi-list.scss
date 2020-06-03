@@ -22,6 +22,8 @@
 
     .buttons {
       float: left;
+      position: relative;
+      width: auto;
 
       .ui.form {
         position: relative;
@@ -30,13 +32,17 @@
         width: 100%;
       }
 
-      &.left {
-        width: calc(100% - 500px)
-      }
-
       &.right {
         float: right;
       }
+    }
+    .ui.search.dropdown{
+      float: left;
+      position: relative;
+      display: block;
+      max-width: 250px;
+      margin-top: 2px;
+      margin-left: 15px;
     }
   }
 

@@ -36,7 +36,6 @@ def graphic_key(request):
     status = request.GET.get('status')
     if request.method == 'POST':
         gr_key = request.POST.get('gr_key')
-        print(status)
         if status == 'new':
             request.session['graphic_key'] = gr_key
             return iredirect('accounts:graphic_key', get={'status': 'confirm'})

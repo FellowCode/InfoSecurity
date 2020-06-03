@@ -4,7 +4,7 @@ from .models import *
 class SkziForm(ModelForm):
     class Meta:
         model = Skzi
-        exclude = ['id']
+        exclude = ['id',  'archive']
 
 
 class SkziNameForm(ModelForm):

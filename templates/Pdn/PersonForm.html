@@ -43,13 +43,41 @@
                                 </div>
                                 <div class="field">
                                     <label>Факультет</label>
-                                    <input type="text" name="fakultet" placeholder="Факультет"
-                                           value="{{ form.fakultet.value|default_if_none:"" }}">
+                                    <div id="fakultet_dropdown" class="ui selection dropdown"
+                                         data-preselect="{{ form.fakultet.value }}">
+                                        <input type="hidden" name="fakultet">
+                                        <i class="dropdown icon"></i>
+                                        <div class="default text">Факультет</div>
+                                        <div class="menu">
+                                            {% for fakultet in fakultets %}
+                                                <div class="item"
+                                                     data-value="{{ fakultet.id }}">{{ fakultet }}</div>
+                                            {% endfor %}
+                                        </div>
+                                    </div>
+                                    <a href="/admin/Pdn/fakultet/add/" class="popup"
+                                       data-dropdown-id="fakultet_dropdown">Добавить</a>
+                                    <a href="/admin/Pdn/fakultet/" class="popup"
+                                       data-dropdown-id="fakultet_dropdown">Управление списком</a>
                                 </div>
                                 <div class="field">
                                     <label>Подразделение</label>
-                                    <input type="text" name="podrazd" placeholder="Подразделение"
-                                           value="{{ form.podrazd.value|default_if_none:"" }}">
+                                    <div id="podrazd_dropdown" class="ui selection dropdown"
+                                         data-preselect="{{ form.podrazd.value }}">
+                                        <input type="hidden" name="podrazd">
+                                        <i class="dropdown icon"></i>
+                                        <div class="default text">Факультет</div>
+                                        <div class="menu">
+                                            {% for podrazd in podrazds %}
+                                                <div class="item"
+                                                     data-value="{{ podrazd.id }}">{{ podrazd }}</div>
+                                            {% endfor %}
+                                        </div>
+                                    </div>
+                                    <a href="/admin/Pdn/podrazdelenie/add/" class="popup"
+                                       data-dropdown-id="podrazd_dropdown">Добавить</a>
+                                    <a href="/admin/Pdn/podrazdelenie/" class="popup"
+                                       data-dropdown-id="podrazd_dropdown">Управление списком</a>
                                 </div>
                                 <div class="field">
                                     <div class="ui checkbox {% if form.soglasie.value %} checked {% endif %}">
@@ -87,6 +115,32 @@
             $('button').click(function () {
                 $(this).addClass('loading')
             });
+
+            function UpdateDropdown($dropdown, dropdown_id) {
+                $.get(window.location.href, function (data) {
+                    $dropdown.replaceWith($(data).find(`#${dropdown_id}`))
+                    $('#' + dropdown_id).dropdown()
+                })
+            }
+
+            $('a.popup').click(function () {
+                var popup = window.open($(this).attr('href'), 'popup', 'width=800,height=600')
+                var dropdown_id = $(this).attr('data-dropdown-id')
+                var $dropdown = $('#' + dropdown_id)
+
+
+                var popupTick = setInterval(function () {
+                    if (popup.closed) {
+                        clearInterval(popupTick)
+                        UpdateDropdown($dropdown, dropdown_id)
+                    }
+                }, 300)
+
+                return false
+            })
+            $('.selection.dropdown').each(function (i) {
+                $(this).dropdown('set selected', $(this).attr('data-preselect'))
+            })
 
             $('.ui.checkbox').checkbox()
         })

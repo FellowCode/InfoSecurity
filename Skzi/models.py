@@ -6,6 +6,8 @@ from utils.model_manager import MyManager
 class Skzi(models.Model):
     objects = MyManager()
 
+    archive = models.BooleanField(default=False)
+
     name = models.ForeignKey('SkziName', on_delete=models.CASCADE)
     serial_n = models.CharField(max_length=32)
     ekz_n = models.CharField(max_length=32, blank=True)

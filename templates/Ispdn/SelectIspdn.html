@@ -16,7 +16,7 @@
                     {% endfor %}
                     <a href="/admin/Ispdn/ispdn/add/" class="ui button primary massive popup-window"
                        data-block-id="ispdn-list">Добавить</a>
-                    <div class="ui form error">
+                    <div class="ui form error {% if date_warnings|length == 0 %} hide {% endif %}">
                         <div class="ui error message">
                             <div class="header">Срок ИСПДн истекает</div>
                             <ul class="list">

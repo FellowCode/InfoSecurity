@@ -2,13 +2,23 @@ from django.http import JsonResponse, FileResponse
 from django.shortcuts import render
 
 from utils.shortcuts import iredirect
+from utils.word import word_skzi
 from .forms import *
 from .models import *
 
 
 def zhurnal(request):
-    skzis = Skzi.objects.all()
-    return render(request, 'Skzi/Zhurnal.html', {'skzis': skzis})
+    if request.method == 'POST':
+        Skzi.objects.filter(id__in=request.POST.get('id', '').split(',')).update(archive=True)
+
+    skzis = Skzi.objects.filter(archive=False).all()
+    if request.GET.get('fiorassilki', '') != '':
+        skzis = skzis.filter(to_person__in=request.GET.getlist('fiorassilki'))
+    if request.GET.get('action') == 'download':
+        path = word_skzi(request, skzis)
+        return FileResponse(open(path, 'rb'))
+    return render(request, 'Skzi/Zhurnal.html', {'skzis': skzis, 'fio_rassilki_list': FioRassilki.objects.all(),
+                                                 'fio_cur': request.GET.get('fiorassilki')})
 
 
 def zhurnal_form(request, id=None):
