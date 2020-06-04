@@ -20,7 +20,7 @@ from Accounts.views import admin_login
 from django.conf import settings
 from django.conf.urls.static import static
 
-
+admin.site.index_template = 'admin/custom_index.html'
 
 urlpatterns = [
     path('admin/login/', admin_login),

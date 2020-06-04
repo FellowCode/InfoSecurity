@@ -1,9 +1,10 @@
 from datetime import datetime, timedelta
 
+from django.contrib.admin.models import CHANGE, ADDITION
 from django.http import FileResponse, JsonResponse
 from django.shortcuts import render
 
-from utils.shortcuts import iredirect
+from utils.shortcuts import iredirect, add_log_entry
 from .forms import *
 from .models import *
 from Pdn.models import Person
@@ -144,9 +145,11 @@ def form(request, id, template, model, model_form, reverse_name, field_name):
     if request.method == 'POST':
         ispdns_ids = list(map(int, request.POST.getlist('ispdn', [])))
         form = model_form(request.POST, request.FILES, instance=instance)
-        print(request.POST)
         if form.is_valid():
-            print(form.cleaned_data)
+            if instance:
+                act_flag = CHANGE
+            else:
+                act_flag = ADDITION
             instance = form.save()
             for ispdn in data['ispdns']:
                 if ispdn.id in ispdns_ids:
@@ -154,8 +157,8 @@ def form(request, id, template, model, model_form, reverse_name, field_name):
                 else:
                     getattr(ispdn, field_name).remove(instance)
                 ispdn.save()
+            add_log_entry(request.user, instance, act_flag)
             if data['source']:
                 return iredirect(f'ispdn:{reverse_name}', ispdn_id=data['source'])
             return iredirect(f'ispdn:{reverse_name}_all')
-        print(form.errors)
     return render(request, template, data)

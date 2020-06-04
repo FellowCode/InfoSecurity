@@ -1,6 +1,8 @@
+from django.contrib.admin.models import ADDITION, CHANGE
 from django.shortcuts import render, redirect
 from django.urls import reverse
 
+from utils.shortcuts import add_log_entry
 from .models import *
 from .forms import *
 
@@ -29,7 +31,12 @@ def person_form(request, id=None):
     if request.method == 'POST':
         form = PersonForm(request.POST, instance=person)
         if form.is_valid():
-            form.save()
+            if person:
+                act_flag = CHANGE
+            else:
+                act_flag = ADDITION
+            person = form.save()
+            add_log_entry(request.user, person, act_flag)
             return redirect(reverse('pdn:persons_list'))
     return render(request, 'Pdn/PersonForm.html',
                   {'form': form, 'fakultets': Fakultet.objects.all(), 'podrazds': Podrazdelenie.objects.all()})

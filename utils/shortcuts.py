@@ -5,6 +5,10 @@ from django.shortcuts import reverse, redirect
 import hashlib
 from django.db import connection, reset_queries
 from itertools import chain
+from django.contrib.admin.models import LogEntry, CHANGE, ADDITION, DELETION
+from django.contrib.contenttypes.models import ContentType
+
+from Skzi.models import Skzi
 
 
 def send_mail(send_func, interval_m, last_date):
@@ -99,3 +103,40 @@ def transliterate(name):
     for key in slovar:
         name = name.replace(key, slovar[key])
     return name
+
+
+def add_log_entry(user, queryset, act_flag):
+    if act_flag == CHANGE:
+        change_msg = 'Изменено'
+    elif act_flag == ADDITION:
+        change_msg = 'Добавлено'
+    else:
+        change_msg = 'Удалено'
+
+    if isiterable(queryset):
+        ct = ContentType.objects.get_for_model(queryset.model)
+    else:
+        ct = ContentType.objects.get_for_model(queryset.__class__)
+
+    def log_action(obj):
+        LogEntry.objects.log_action(
+            user_id=user.id,
+            content_type_id=ct.pk,
+            object_id=obj.pk,
+            object_repr=obj.__str__(),
+            action_flag=act_flag,
+            change_message=change_msg)
+
+    if isiterable(queryset):
+        for obj in queryset:
+            log_action(obj)
+    else:
+        log_action(queryset)
+
+
+def isiterable(p_object):
+    try:
+        it = iter(p_object)
+    except TypeError:
+        return False
+    return True

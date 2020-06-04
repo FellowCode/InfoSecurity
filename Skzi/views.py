@@ -1,10 +1,12 @@
 from django.http import JsonResponse, FileResponse
 from django.shortcuts import render
 
-from utils.shortcuts import iredirect
+from utils.shortcuts import iredirect, add_log_entry
 from utils.word import word_skzi
 from .forms import *
 from .models import *
+from django.contrib.admin.models import LogEntry, CHANGE, ADDITION
+from django.contrib.contenttypes.models import ContentType
 
 
 def zhurnal(request):
@@ -31,12 +33,14 @@ def zhurnal_form(request, id=None):
         skzi = Skzi.objects.get_or_404(id=id)
         data['form'] = SkziForm(instance=skzi)
     if request.method == 'POST':
-        if skzi:
-            form = SkziForm(request.POST, instance=skzi)
-        else:
-            form = SkziForm(request.POST)
+        form = SkziForm(request.POST, instance=skzi)
         if form.is_valid():
-            form.save()
+            if skzi:
+                act_flag = CHANGE
+            else:
+                act_flag = ADDITION
+            skzi = form.save()
+            add_log_entry(request.user, skzi, act_flag)
             return iredirect('skzi:zhurnal')
         print(form.errors)
         data['form'] = form
