@@ -1,7 +1,10 @@
 import os
 
+from django.db.models import Count, Q
 from docx import Document
 from docx.shared import Pt
+
+from Pdn.models import Person, Podrazdelenie
 
 
 def word_skzi(request, skzis):
@@ -9,8 +12,8 @@ def word_skzi(request, skzis):
     table = doc.tables[0]
     for i, skzi in enumerate(skzis):
         table.add_row()
-        row = i+3
-        table.cell(row, 0).text = str(i+1)
+        row = i + 3
+        table.cell(row, 0).text = str(i + 1)
         table.cell(row, 1).text = str(skzi.name)
         table.cell(row, 2).text = skzi.serial_n
         table.cell(row, 3).text = skzi.ekz_n
@@ -59,8 +62,6 @@ def word_skzi(request, skzis):
         if skzi.primechanie:
             table.cell(row, 14).text = skzi.primechanie
 
-
-
     for row in table.rows:
         for cell in row.cells:
             paragraphs = cell.paragraphs
@@ -75,6 +76,77 @@ def word_skzi(request, skzis):
         os.makedirs(path)
 
     filename = f'Журнал СКЗИ.docx'
+    path += f'/{filename}'
+
+    doc.save(path)
+    return path
+
+
+def word_skzi_mini(request, skzis):
+    doc = Document('static/files/Skzi-mini.docx')
+    table = doc.tables[0]
+
+    for i, skzi in enumerate(skzis):
+        table.add_row()
+        row = i + 1
+        table.cell(row, 0).text = str(i + 1)
+        table.cell(row, 1).text = str(skzi.name)
+        table.cell(row, 2).text = skzi.serial_n
+        table.cell(row, 3).text = skzi.to_person.get_fio()
+        if skzi.date_vvod:
+            table.cell(row, 4).text = skzi.date_vvod.strftime('%d.%m.%Y')
+
+    for row in table.rows:
+        for cell in row.cells:
+            paragraphs = cell.paragraphs
+            for paragraph in paragraphs:
+                for run in paragraph.runs:
+                    font = run.font
+                    font.size = Pt(12)
+
+    path = f'tmp/skzi/word/{request.user.id}'
+
+    if not os.path.exists(path):
+        os.makedirs(path)
+
+    filename = f'Отчет СКЗИ.docx'
+    path += f'/{filename}'
+
+    doc.save(path)
+    return path
+
+
+def persons_otchet(request):
+    podrazds = Podrazdelenie.objects.values('name'). \
+        annotate(person_count=Count('persons'),
+                 person_sogl=Count('persons',
+                                   filter=Q(persons__soglasie=True) & Q(persons__sogl_raspr=True))).order_by('name')
+    doc = Document('static/files/Persons_sogl.docx')
+    table = doc.tables[0]
+
+    for i, podrazd in enumerate(podrazds):
+        table.add_row()
+        row = i + 1
+        table.cell(row, 0).text = str(i + 1)
+        table.cell(row, 1).text = str(podrazd['name'])
+        table.cell(row, 2).text = str(podrazd['person_count'])
+        table.cell(row, 3).text = str(podrazd['person_sogl'])
+        table.cell(row, 4).text = str(podrazd['person_count'] - podrazd['person_sogl'])
+
+    for row in table.rows:
+        for cell in row.cells:
+            paragraphs = cell.paragraphs
+            for paragraph in paragraphs:
+                for run in paragraph.runs:
+                    font = run.font
+                    font.size = Pt(12)
+
+    path = f'tmp/skzi/word/{request.user.id}'
+
+    if not os.path.exists(path):
+        os.makedirs(path)
+
+    filename = f'Отчет ПДн.docx'
     path += f'/{filename}'
 
     doc.save(path)

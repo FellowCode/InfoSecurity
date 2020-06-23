@@ -14,6 +14,8 @@
                         <div class="buttons left">
                             <a href="{% iurl 'pdn:person_form' %}"
                                class="button primary ui medium">Добавить нового</a>
+                            <a href="{% iurl 'pdn:otchet' %}"
+                               class="button primary ui medium">Скачать отчет</a>
                         </div>
                         <form id="filter-form">
                             <div class="ui fluid search selection dropdown">
@@ -90,9 +92,6 @@
     <script type="text/javascript" src="{% static 'js/table_sort.js' %}"></script>
     <script type="text/javascript">
         $(document).ready(function () {
-            $('.button:not(.download)').click(function () {
-                $(this).addClass('loading')
-            });
             setupList()
 
             function setupList() {

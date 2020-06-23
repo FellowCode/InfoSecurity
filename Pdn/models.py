@@ -9,8 +9,8 @@ class Person(models.Model):
     first_name = models.CharField(max_length=128, verbose_name='Имя')
     surname = models.CharField(max_length=128, verbose_name='Отчество')
     birth_date = models.DateField(verbose_name='Дата рождения')
-    fakultet = models.ForeignKey('Fakultet', on_delete=models.SET_NULL, null=True, blank=True, verbose_name='Факультет')
-    podrazd = models.ForeignKey('Podrazdelenie', on_delete=models.SET_NULL, null=True, blank=True, verbose_name='Подразделение')
+    fakultet = models.ForeignKey('Fakultet', on_delete=models.SET_NULL, null=True, blank=True, verbose_name='Факультет', related_name='persons')
+    podrazd = models.ForeignKey('Podrazdelenie', on_delete=models.SET_NULL, null=True, blank=True, verbose_name='Подразделение', related_name='persons')
 
     soglasie = models.BooleanField(default=False, verbose_name='Согласие на обработку персональных данных')
     sogl_raspr = models.BooleanField(default=False, verbose_name='Согласие на распространение персональных данных')

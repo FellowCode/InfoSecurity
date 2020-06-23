@@ -15,6 +15,7 @@
                         <div class="buttons left">
                             <a href="{% url 'skzi:zhurnal_form' %}" class="button primary ui">Добавить</a>
                             <a id="download-word" class="button primary ui">Скачать Word</a>
+                            <a id="mini-otchet" class="button primary ui">Мини отчет</a>
                             <a id="archive" class="ui button primary">Добавление в архив</a>
                             <a id="cancel" class="ui button primary hide">Отмена</a>
                         </div>
@@ -129,6 +130,7 @@
             $('table').tablesort()
             var $items
             setupTrClick()
+
             function setupTrClick() {
                 $items = $('table tbody tr');
                 $items.click(function () {
@@ -140,6 +142,7 @@
                     }
                 })
             }
+
             var token = $('input[name=csrfmiddlewaretoken]').val()
             $('.ui.selection.dropdown').dropdown({
                 clearable: true,
@@ -160,6 +163,13 @@
                 if (!url.includes('?'))
                     url += '?'
                 url += '&action=download'
+                window.location.href = url
+            })
+            $('#mini-otchet').click(function () {
+                var url = window.location.href
+                if (!url.includes('?'))
+                    url += '?'
+                url += '&action=download-mini'
                 window.location.href = url
             })
             var archive = false

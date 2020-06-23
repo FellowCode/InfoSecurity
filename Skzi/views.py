@@ -2,7 +2,7 @@ from django.http import JsonResponse, FileResponse
 from django.shortcuts import render
 
 from utils.shortcuts import iredirect, add_log_entry
-from utils.word import word_skzi
+from utils.word import word_skzi, word_skzi_mini
 from .forms import *
 from .models import *
 from django.contrib.admin.models import LogEntry, CHANGE, ADDITION
@@ -18,6 +18,9 @@ def zhurnal(request):
         skzis = skzis.filter(to_person__in=request.GET.getlist('fiorassilki'))
     if request.GET.get('action') == 'download':
         path = word_skzi(request, skzis)
+        return FileResponse(open(path, 'rb'))
+    elif request.GET.get('action') == 'download-mini':
+        path = word_skzi_mini(request, skzis)
         return FileResponse(open(path, 'rb'))
     return render(request, 'Skzi/Zhurnal.html', {'skzis': skzis, 'fio_rassilki_list': FioRassilki.objects.all(),
                                                  'fio_cur': request.GET.get('fiorassilki')})
